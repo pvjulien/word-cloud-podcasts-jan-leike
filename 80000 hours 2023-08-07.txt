@@ -1,0 +1,792 @@
+rob wiblin hi listeners rob wiblin here head of research at 80000 hours
+
+today's interview is kind of a big deal because jan leike is leading up what i believe is the best resourced effort to date anywhere to figure out how to align superintelligent ai systems and make them safe for humanity
+
+a few weeks ago openai announced that they'd be giving over 20% of their computational resources to a so-called ‘superalignment' project that jan as head of alignment would be overseeing
+
+that generated a lot of buzz not least because 20% of openai's compute is a huge amount but also because they set themselves the goal of solving this problem in just 4 years and jan thinks they have a real shot of doing so
+
+as far as i know this interview here has as much information about this superalignment effort as you'll be able to find publicly anywhere right now
+
+it's technical without being very technical and we get jan's personal takes on related policy and strategy questions as well as ml ones
+
+in my opinion this openai superalignment project has a frankly bizarre likelihood of being one of the most important things that happens on earth this decade which i think is itself a strong reason to listen in
+
+two quick notes before that
+
+we've had a lot of ai episodes in a row lately so those of you who aren't that interested in ai or perhaps just aren't in a position to work on it might be wondering if this is an all ai show now
+
+but don't unsubscribe because we're working on plenty of non-ai episodes that i think you'll love  over the next year we plan to do roughly half our episodes on ai and ai-relevant topics and half on things that have nothing to do with ai
+
+what happened here is that in march it hit keiran and luisa and me that so much very important stuff had happened in the ai space that had simply never been talked about on the show and we've been working down that coverage backlog which felt pretty urgent to do
+
+but soon we'll get back to a better balance between ai and non-ai interviews i'm looking forward to mixing it up a bit myself
+
+finally as usual the opinions i express in this interview are basically my own i don't know what all my colleagues think about openai or the superalignment project probably some like it more than me others will like it less but in any case on a complex fast-moving topic like this one the stuff that i say in these interviews isn't some considered opinion of the full 80000 hours team  it reflects my guesses and feelings and opinions
+
+ok without further ado i bring you jan leike
+
+rob wiblin today i'm speaking with jan leike since 2021 jan has been head of alignment at openai and along with openai founder ilya sutskever he is going to be coleading their new superalignment project years ago jan did his phd with the well-known machine learning figure marcus hutter as supervisor and he then did a brief postdoc at the future of humanity institute at oxford before becoming a research scientist at deepmind which is what he was doing when he last came on the show in 2018 for episode #23 how to actually become an ai alignment researcher according to jan leike
+
+thanks for coming back on the podcast jan
+
+jan leike thanks a lot for having me again it's really great to be here
+
+rob wiblin you've really gone places since then i feel like we've been sometimes pretty good at picking talent or picking people whose careers are going to take off i hope to talk about the superalignment project and who you're trying to hire for that as well as put a lot of audience questions to you so let's dive right in to save you a little bit of effort though i'll read an extract from the announcement that openai put out about the superalignment project two weeks ago
+
+superintelligence will be the most impactful technology humanity has ever invented and could help us solve many of the world's most important problems but the vast power of superintelligence could also be very dangerous and could lead to the disempowerment of humanity or even human extinction while superintelligence seems far off now we believe it could arrive this decade […]
+
+we need scientific and technical breakthroughs to steer and control ai systems much smarter than us to solve this problem within four years we're starting a new team co-led by ilya sutskever and jan leike and dedicating 20% of the compute we've secured to date to this effort we're looking for excellent ml researchers and engineers to join us
+
+so for listeners who haven't been following this much or possibly at all can you fill us in on some more details of the project
+
+jan leike yeah very happy to basically if you look at how we are aligning large language models today it's using reinforcement learning from human feedback (rlhf)  which is basically a technique where you show a bunch of samples to a human and you ask them which one they prefer for a dialogue assistant or something then that becomes a training signal for chatgpt or other ai systems like it
+
+and we fundamentally don't think that rlhf will scale and the reason for that is very simple because you have humans overseeing ai systems you're assuming that they can tell that this response is better than this other response you know they fundamentally understand what the system is doing and this is definitely true today or let's say for the most part because the tasks that chatgpt is doing just aren't that complex
+
+but as ai systems get smarter they will be able to do harder things they will be doing things that we understand much less and the fundamental assumption  that humans can evaluate what the system is doing  will no longer be true so in order to really steer and control systems that are much smarter than us we will need new techniques
+
+rob wiblin ok so the current method is to observe the output and then rate how good it has been then i guess that provides feedback that helps to push the model in the right direction but in future we just might not be able to evaluate whether the model actually is at a deeper level doing what we want it to do and so we're going to have to have some other way of nudging it in the right direction is that kind of the short version of it
+
+jan leike that's right so the problem is if you have a system that is really smart it could think of all kinds of ways to subtly subvert us or try to deceive us or lie to us in a way that is really difficult for us to check and so i think there's a lot of really important and interesting research challenges here which are can we understand how we can extract what the model knows about certain problems like if it writes a piece of code can i tell of which parts of the codes that i understand does it know there are certain bugs in the code or can we understand how the system can generalize from easy problems that we can supervise to harder ones we can't or can we understand how we make it robust so that it can't get jailbroken or that it can't subvert the monitoring systems things like that
+
+rob wiblin ok so i guess distinct from what openai has already been doing this is going to focus on models that are as smart as humans or smarter than humans or doing things that are quite complicated  such that they're sophisticated enough to potentially trick us or that there could be other failures that come up what's going to happen to all of the alignment and safety work that openai has already been doing up until now is that just going to continue with a different team what's going to happen to it
+
+jan leike i think there's a lot of really important work to be done to ensure that the current systems we already have are safe and they continue to be safe and they won't be misused and there's a lot of stuff that's happening around this at openai that i'm really excited about and that i would be really excited for more people to join so this involves fixing jailbreaking and finding ways to automatically monitor for abuse questions like that and that work has to continue and that work happens in the context of the chatgpt product
+
+but what we are setting out to do is we want to solve alignment problems that we don't really have yet so for example if you have gpt-4 help you write a piece of code it doesn't really write really complicated pieces of code right it doesn't really write entire complicated codebases and it's not generally smart enough to put let's say a trojan into the code that we wouldn't be able to spot
+
+but future models might do that and so i think our job is fundamentally trying to distinguish between two different ai systems one that truly wants to help us truly wants to act in accordance with human intent truly wants to do the things that we want it to do and the other one just pretends to want all of these things when we're looking but then if we're not looking it does something else entirely and the problem is that both of these systems look exactly the same when we're looking
+
+rob wiblin right it's an awkward fact for us
+
+jan leike that's right that makes it an interesting challenge but we have a bunch of advantages right we can look inside the model we can send the model through all kinds of different tests we can modify and do internals we can erase the system's memory we can see if it's consistent with other things it's saying in other situations and so at the very least you can make sure that it is a very coherent liar with itself
+
+but we really want to do more than that we have to solve the challenge of how do we know it is truly aligned
+
+rob wiblin yeah it'd be a great science fiction book i think to imagine this scenario from the perspective of the ai where it's much smarter than the people who are training it but on the other hand they can look inside its brain and give it all of these funny tests in order to try to check whether it's deceiving them and what kind of strategies would you come up with as an agent to work around that it's going to be like a real cat-and-mouse game
+
+jan leike yep so i think it's important here that we're not picturing vastly powerful systems so we're not going to picture systems that are vastly smarter than us they might be better than us in some ways  for example gpt-4 is much better at remembering facts or it can speak more languages than any humans  but it's also much worse in some ways like it can't do arithmetic right which is kind of embarrassing if you think about it
+
+rob wiblin well i mean i can't remember more than seven numbers at a time so i feel like we all have our own limitations right now
+
+jan leike yeah so i think the goal that we really want to aim for is we want to be able to align a system that is roughly as smart as the smartest humans who are doing alignment research so let's zoom into that question a little bit which is this question of what would it take to not only align a system like that but also to be confident that it is sufficiently aligned
+
+basically i think one useful way to think about it is you want to split your methods into two general buckets you have a bunch of training methods that train the system to be more aligned and then you have validation methods that kind of calibrate your confidence about how aligned the system actually is and as usual when you do this training/validation split in machine learning you want to know that there's no leakage of the validation set into the training set
+
+rob wiblin i guess the problem would be that if you're training the model on the same thing that you're using to check whether you've succeeded or not then of course it could just become extremely good at doing that test even though it's not aligned in the broader sense  it's just kind of gerrymandered to have its failures not picked up with your test so you need to have it that the things that you use to get feedback on to train the model have to be fully separated from the things that you use to validate whether that training has succeeded is that the basic idea
+
+jan leike that's right you don't want to train on the test that makes passing the tests so easy
+
+rob wiblin ok we'll come back to some of those details in a minute but first i had a couple of audience questions to put to you we got a lot of submissions from listeners particularly keen to hear clarification from you one listener asked why the target for solving this problem in four years is that roughly when jan expects agi to arrive
+
+jan leike great question i think in general i would have a lot of uncertainty of how the future is going to go i think nobody really knows but a lot of us expect that actually things could be moving quite quickly and systems could get a lot smarter or a lot more capable over the next few years and we would really love to be ahead of that we would really love to have solved this problem in advance of us actually having had to solve it or at least ideally far in advance so this four-year goal was picked as kind of a middle ground between… we don't know how much time we'll have but we want to set an ambitious deadline that we still think we could actually meet
+
+rob wiblin so it's kind of the most ambitious target that doesn't also cause you to laugh at the possibility that it could be done that quickly this is kind of a best-case scenario
+
+jan leike a lot of things can be done in four years
+
+rob wiblin ok another question about the announcement the announcement talks about this 20% of compute that openai has secured so far i guess i don't know all the details about exactly how much compute open ai has but i imagine that by any measure it's going to be a pretty significant amount of computational resources
+
+but one sceptical listener wanted me to quote dig deeper on the 20% compute stat what is openai's net change in investment in alignment with the super alignment team considering compute headcount and funding they may be increasing investment in alignment but are they increasing investment in capabilities much more
+
+so in particular some people have pointed out that this is 20% of compute secured so far and of course amounts of compute are growing every year so that might end up being small relative to 20% of all compute in future can you clarify this for us
+
+jan leike yeah so the 20% compute secured so far number refers to everything we have access to right now and everything we've put purchase orders in for and so this is actually really a lot i think the technical term is a fucktonne
+
+rob wiblin yeah it sounds like given that you're just building this team from scratch you might have about the most compute per person or an extremely high compute per staff member right
+
+jan leike yeah but i think this is not the right way to think about it because it's compute that's allocated to solve the problem not necessarily for this particular team so one way this could go is we develop some methods and then some other team that's really good at scaling stuff up scales it up and they actually spend a lot of it
+
+i think it's not the correct way to think about this it's not what it is relative to capabilities i think it's what it is relative to other investments in alignment and in terms of how much we've been investing so far this is a really significant step up  not just like a 3x but a lot more than that and i think also it shows that openai is actually really serious about this problem and really putting resources behind solving it and they wouldn't have to have made that commitment right nobody forced them to
+
+rob wiblin yeah i suppose if you run out if you use up this 20% do you think it'll be relatively straightforward to get access to additional compute that you get the commitments that come out in future years as well
+
+jan leike yeah i would be pretty confident that if we have a good plan on how to spend more compute and we are like if we have this much more we could do this much better on alignment or something i think we can make a really strong case for a lot more compute if that's what it comes down to basically i think that's the best world to be in if all you need to solve the problem is to go around asking for more gpus i think we've mostly won honestly
+
+rob wiblin yep why is it so important for this project to have access to a lot of compute
+
+jan leike so there's a bunch of ways of answering that question i think if you look at the history of deep learning over the last 10 years basically compute has played a really major role in all of the big headline advances and headline results and there's this general recipe that a lot of simple ideas work really well if you scale them up and if you use a lot of compute to do it
+
+this has been true for capabilities i expect to some extent this will be true for alignment as well it won't be only true because i don't think anything we currently have right now is really ready to just be run at scale and there's a real research problem to be solved here but also i think the strategies that we're really excited about  and the strategies to some extent that we are also comparatively advantaged at investing in  are the ones where you really scale up and you use a lot of compute
+
+so in particular if we're thinking about scalable oversight we can spend more compute on assisting human evaluation and that will make the evaluation better or automated interpretability if we have a method that we can automatically run over a whole network we could just spend a lot of compute and run it on the biggest model
+
+and ultimately where we want to go is we want to automate alignment research itself which means we would be running kind of a virtual alignment researcher and once we get to that stage then it's really clear that you just want to spend a fucktonne of compute to run that researcher a lot and it'll make a lot of alignment progress very quickly
+
+
+rob wiblin ok let's first take a step back and survey the current state of the art in alignment methods and why you're confident that they're not going to be enough to align agentic models that are much more intelligent than humans
+
+one thing i'll add is that you've done this other interview with the ai x-risk research podcast which covers a lot of questions that people would be especially likely to have if they're already involved in ai safety or alignment so in the interest of product differentiation today we're going to focus a little bit more on the questions that people might have if they're coming in from non-safety-related ml research or they're just outside machine learning entirely looking on and trying to make sense of what's going on here
+
+so what alignment and safety techniques are currently dominant in cutting-edge models is it just the reinforcement learning from human feedback that you were talking about earlier
+
+jan leike yeah that's right so reinforcement learning from human feedback is kind of the popular method today it works well because humans can look at what the system is doing and tell whether it's good or not
+
+and if you're thinking hard about how to scale that you run into this problem that basically humans don't scale with ai progress right if we make our ai systems better humans don't automatically get better so if you want to kind of scale similarly humans' ability to oversee what ai is doing the obvious path to do this is to get them to use ai so let's say you have an ai system and it's trying to write this complicated codebase or a complicated textbook or something now you could use an assistant like chatgpt to help you find all the problems in this textbook  and this could be a future version of chatgpt that uses a lot of plugins and does a lot of fact-checking and browsing and reads a bunch of books and whatnot but fundamentally the question is why is this helping
+
+the basic idea behind this is you're actually making the task easier by assisting evaluation like if you have an ai assistant that's suggesting a bug in the code it's much easier for you to go and check that this is in fact a bug than it is to find all the bugs in the first place and so by having this bug-finding system not only does it help you a lot in overseeing and evaluating the actual codebase-writing system but it is also in itself a task that is easier to supervise you could picture for example training that task with rlhf and then using that system to evaluate this harder task and so there's a range of ideas like that that we call scalable oversight and that's one of our main directions
+
+rob wiblin so i suppose an assumption here is that things would go better if only humans could spend a lot of time scrutinising the outputs of models and figuring out really in what ways were they good and bad and then reinforcing them on that basis  having a full sophisticated understanding of what has gone well and what has gone badly and reinforcing the good and negatively reinforcing the bad
+
+but as ai progresses it is going to be producing much more complicated outputs that take much longer for a person to assess or they just may not be able to assess it very well because it's too challenging or there's going to be many more different kinds of models producing a wider range of things and we just don't have the personpower we just don't have enough people to properly check these outputs and see when they've gone well and when they've gone badly so we could end up getting feedback that's bad we could end up saying that the model did a great job when in fact it did a bad job or saying it did a great job when in fact it was tricking us and then we're just reinforcing it to learn how to trick us better and learning that that's a successful strategy
+
+now the problem is ai is rushing ahead humans are kind of stuck at the clock speed that they have we're not getting any faster or any smarter but the magic would be if we could get ais to do the scrutinising to do the checking  because then the things that you need to check are speeding up and getting more sophisticated at the same rate as the checker is getting more sophisticated is that the basic idea
+
+jan leike yep that's the basic idea and i think the point you're making is really good and i want to echo that if you use rlhf you're basically training the system to avoid the kind of mistakes that humans would find so one way it could go is the system then generalizes to i shouldn't make the kind of mistakes humans would find but actually what you want it to generalize to is i shouldn't make mistakes or mistakes that i know are mistakes and this is a really important but subtle distinction
+
+rob wiblin yeah do you want to elaborate on that so they come apart when we give inaccurate feedback is the idea that if our feedback were always accurate  in the sense that we only say a good job has been done when a good job truly has been done and that's what we would think if we just knew everything and we were incredibly brilliant ourselves  then you can't get this coming apart between doing the right thing and avoiding mistakes that are visible to the assessor
+
+jan leike that's right but i don't know about you but man i find it so hard to actually… we don't have access to ground truth right like we don't know what's actually true if you give me a complicated code there's no way i'm going to find all the bugs it is just too difficult
+
+but this is also a core part of the challenge if you have an ai system that writes a lot of code which i expect will happen in the future people will want to run that code and so how do we know that ai systems aren't secretly placing backdoors or trojans or other security vulnerabilities into the code that they know we'll miss  because we've trained them with a feedback signal that tells them exactly what kind of bugs we spot and we miss
+
+rob wiblin i see so in order to make this whole thing work what do we need that we currently don't have
+
+jan leike so i kind of teased a little bit the scalable oversight idea there's a bunch of other puzzle pieces that we're really excited about that we think are going to be crucial here
+
+the other one is understanding generalization like can we really predict and improve how our models generalize from easy questions that we can supervise well to hard questions that we can't or in other words how can we get them to generalize the thing that we actually want  which is don't write bugs  and not this nearby thing that is basically consistent with all the evidence which is don't write bugs that humans find i think this is a really interesting and important question but it feels like one of these core machine learning questions that is about how neural networks really work and it's kind of puzzling that there is so little work that has actually been done on this question
+
+another puzzle piece that might be really important is interpretability in a sense we have the perfect brain scanners for neural networks for artificial neural networks we can measure them at perfect precision at every minuscule time interval and we can make arbitrary precise modifications to them and that's a really powerful tool so in some sense they're completely open boxes that we just don't understand how they actually work and so it'd be kind of crazy not to look inside and try to understand what's going on and answer questions for like the reward model used to train chatgpt what is it actually paying attention to how does it decide what is rewarded and what is not rewarded we know very little about that we know almost nothing that seems crazy we should really know that
+
+rob wiblin i've said that on the show before that it's just bananas that we don't understand the incentive structure or how it thinks about what it's trying to do
+
+jan leike yeah and it's right there you just stare at it and it's a hard problem but i think we can make real progress on that
+
+and then there's other questions like how can we actually make the model really robust one example that we found with the instructgpt paper is that we trained it on basically a dataset that was almost exclusively english and it can follow instructions in other languages like i can ask it something in german and it will still do it sometimes it might answer in english which is also kind of weird what's going on there
+
+and then another example is the jailbreaking you've seen all of this with gpt-4 you can make these pretty simple prompts and then trick the model into doing a task it was trained not to do and it's not supposed to do so in some ways it's not generalized i shouldn't do bad stuff  it's generalizing some other way what's going on there why don't we understand that
+
+rob wiblin yeah what is the lesson that it's learning if it's not learning don't help people commit crimes and instead it's just learning don't help people commit crimes  unless you're in a play how is it not getting these concepts
+
+jan leike yep and it seems like humans can do this well i mean humans don't do it perfectly but what's the difference here and so this is another aspect of generalization that could be really useful for us to understand
+
+and then finally one of the things we want to do is actually deliberately train deceptively aligned models  like models that try to lie to us very coherently or try to secretly do something like self-exfiltration
+
+rob wiblin so that's a model kind of breaking out of the lab
+
+jan leike that's right because we want to be confident that we could catch these attempts right and the straightforward way to be confident is we deliberately train it and then we check whether it would pass our evals so whether it would fly under our radar but of course if you're doing this you have to be super careful that you're not accidentally creating the thing that you've been trying to avoid in the first place so it has to be done very carefully
+
+rob wiblin yeah it seems to me people have very different intuitions about how likely it is that a model that gets imperfect feedback is going to learn to engage in really deceptive behaviour if you imagine that we train a model and we don't want it to lie and nine times out of 10 we catch it lying and give it negative feedback but one time in 10 we accidentally say it did a good job when it lied it seems like humans kind of learned this general aversion to lying even when we think that we might be able to get away with it that's how most people generalize although i guess not all
+
+but some people think that in that situation it's just disastrous because you've just trained the model to engage in the most sophisticated lying possible and to trick you whenever it thinks it can get away with it and not when it can't other people think it'll just learn this general aversion to lying and everything's going to be fine
+
+do you share my perception that people have very different intuitions about this and what are your views if you have any
+
+jan leike i think it just makes it clear that we don't know and i think we should know and i think one of the best ways to figure this out is to try it empirically
+
+rob wiblin do experiments
+
+jan leike yeah and there's so many interesting experiments we can run now with the models exactly of this nature like we could try to train them to be better liars and see how does it behave how does it generalize
+
+rob wiblin yeah ok so you've been talking about various different ways in which models might be able to help you with alignment research in future and i guess that's really the heart of the project
+
+jan leike yeah our overall goal is to get to a point where we can automate alignment research and what this doesn't mean is we're not trying to train a system that's really good at ml research or that is really smart or something that's not superalignment's job
+
+rob wiblin i think a lot of people have been thinking that i think they've read your announcement as saying that you're trying to train a really good ml researcher basically
+
+jan leike i don't think this would particularly differentially help alignment i think it would be good to clarify basically how i understand our job is that once there's models that can do ml research or things that are close to it  and i think that is something that's going to happen anyway and that will happen whether openai does it or not  our job is to figure out how to make it sufficiently aligned that we can trust the alignment research or the alignment research assistance that it is producing because essentially if you're asking this system to help you in your alignment research there's a big opportunity for the system to influence or try to nudge us into believing certain techniques are really good that actually aren't and thus that system or future systems gain power over humans in a way that we actually don't want and that isn't aligned with us and so what we ultimately need to do is figure out how to make that system sufficiently aligned that we can actually trust it
+
+so that means for example let's say this for simplicity the system writes an alignment paper now you can read the paper but just off the bat you might not actually be able to find all the flaws in the paper or in general the way scientific peer review is not perfect and there's lots of examples where people would go for decades with fake research before they're being found out so this is something that we have to really figure out how to avoid so because alignment research or scientific research in general is a difficult task that humans aren't that good at evaluating at least not if you don't have a lot of time to do it the question then becomes what kind of alignment techniques do we need in order to be sufficiently confident that this is the case
+
+so let me give you some examples on scalable oversight one of the goals that we could think about is let's say we want to get really good at finding all the bugs in code that the model knows about so how do we do this one path could be we train a model that introduces bugs in code and then we can see whether our scalable oversight can catch it and i'm happy to go into what kind of scalable oversight we could do here but on the high level there's lots of different ideas and we should just try them all and see which ones work empirically
+
+and that's why it's important to measure whether or not it's working or measure whether you're making progress in scalable oversight so by training these systems to introduce bugs the system will kind of be aware of the bugs it's introducing right and so the question then is if an ai-assisted human can find the bug then we're good or we want to measure how often they will find it or how easy it is for us to introduce bugs that the scalable oversight doesn't find
+
+another path is what we call the discriminator-critique gap  where basically we train a model to be a discriminator between buggy code and non-buggy code which we can generate manually or generate automatically and then we compare that to let's say a critique model that's prompted to describe all the bugs it can find so if you end up with a bunch of code samples that the discriminator flagged is fishy but the critique model doesn't point you to the bug that is going on there then you know there's something about the code the model is aware of that you're not finding
+
+rob wiblin how do you know that they're both aware of it is it because they were trained in the same way somehow
+
+jan leike so right now i'm picturing using the same base model for both the discriminator and the critique model
+
+rob wiblin got it
+
+jan leike and so by looking at this in detail you can get some empirical measurements for how often does it actually happen where you know there is something buggy about the code that the model doesn't tell you and then you can do it adversarially so you're not just measuring in the average case and i think that's a really promising path not only to measure that we're making progress in scalable oversight  because you can picture if you can catch more of these kinds of bugs that the model is aware of then you've made scalable oversight better but also if you actually nail this and we get to the point where we can be super confident that if there was something fishy about the code that there's some problem with the code the model is aware of and you find out then that would make you so much more comfortable with then actually executing the code to see what happens
+
+rob wiblin yeah just to back up a second the basic idea is that machine learning models that are capable of doing ai research are coming whether we want it or not many people are nervous about that because it could set up this recursive self-improvement loop so there could be good reasons to maybe delay that moment a bit but we're not going to be able to delay that forever
+
+so what we want to do when that moment comes is firstly know ways that we can use models with those capabilities to do alignment research as well as non-alignment machine learning research and also it's very essential that we'd be able to get to a place where we believe that these models are trustworthy enough that we can use the help that they're giving us on improving our alignment research from the stage that it's at we both need to be able to figure out how we can get them to be sufficiently trustworthy that we can use those outputs and also to be able to know that we've succeeded at doing that so that we in fact do is that the long and the short of it
+
+jan leike yeah in general i want to be agnostic towards when exactly this is possible like when will there be automated machine learning research or when will models be so smart that they can do that there might be delays there might be all kinds of reasons why it happens later than sooner the thing i really want to do is i want to be ready to use these systems for alignment research once that becomes possible and so what we don't want to do is accelerate this or make it happen sooner  because it will happen soon enough i think  but we want to be ready to then use them for alignment research and be ready to make the alignment progress faster as ml progress gets faster at that point
+
+rob wiblin yeah i think an important part of the vision to keep in mind is that it might be extremely difficult to align and figure out the trustworthiness of an ai that is just extraordinarily above human capabilities  that is truly extraordinarily superintelligent  because it's going to have so many different ways of tricking us but the hope here is that at the point when these models are first available they're going to be more around human level  and might even have some areas where they're a little bit weaker than people but other areas where they're very strong but because they're not going to be so incredibly capable it might be easier to figure out whether we can trust them because they're not going to have so many options in their space of actions and they might be somewhat more scrutable because the actual things that they're doing in their mind are closer to maybe what we're doing than what a kind of planet-sized mind might be able to do
+
+i think many people might have a bunch of scepticism about this because they'll think it's smarter than us so it's going to always be able to run rings around us and you could maybe go out of your way to make sure that you're not dealing with a model that's as capable as you possibly could make in order to make it easier to evaluate the trustworthiness
+
+jan leike yeah i think that's right and i think that's a really central point if you're thinking about how do you align the superintelligence  how do you align the system that's vastly smarter than humans  i don't know i don't have an answer i don't think anyone really has an answer but it's also not the problem that we fundamentally need to solve maybe this problem isn't even solvable by humans who live today but there's this easier problem which is how do you align the system that is the next generation how do you align gpt-n+1 and that is a substantially easier problem
+
+and then even more if humans can solve that problem then so should a virtual system that is as smart as the humans working on the problem and so if you get that virtual system to be aligned it can then solve the alignment problem for gpt-n+1 and then you can iteratively bootstrap yourself until you're at superintelligence level and you've figured out how to align that and of course what's important when you're doing this is at each step you have to make enough progress on the problem that you're confident that gpt-n+1 is aligned enough that you can use it for alignment research
+
+rob wiblin yeah how is the machine learning community  i'm thinking of folks who aren't involved in safety or alignment research in particular  how have they reacted to this plan or announcement
+
+jan leike i think in general people are really excited about the research problems that we are trying to solve and in a lot of ways i think they're really interesting from a machine learning perspective i think also i don't know i think the announcement kind of showed that we are serious about working on this and that we are trying to get a really high-calibre team on this problem and that we are trying to make a lot of progress quickly and tackling ambitious ideas especially in the last six months or so there's been a lot more interest from the machine learning community in these kinds of problems
+
+and i also think the success of chatgpt and similar systems has made it really clear that there's something interesting going on with rlhf and there's something interesting about this there's something real about this alignment problem right like if you compare chatgpt to the original base model they're actually quite different and there's something important that's happening here
+
+rob wiblin yeah i listened back to our interview from five years ago and we talked a lot about reinforcement learning from human feedback because that was new and that was the hot thing back then was openai or you involved in coming up with that method
+
+jan leike yes that's right i think more accurately probably a lot of different people in the world invented it and before we did the deep reinforcement learning from human preferences paper there was other previous research that had done rl from human feedback in various forms but it wasn't using deep learning systems and it was mostly just proof-of-concept style things and then the deep rl from human preferences paper was joint work with paul christiano and dario amodei and me i think we kind of all independently came to the conclusion that this is the way to go and then we collaborated
+
+rob wiblin and that's turned out to be really key to getting chatgpt to work as well as it does right
+
+jan leike that's right it's kind of been wild to me how well it actually worked if you look at the original instructgpt paper one of the headline results that we had was that actually the gpt-2 sized system  which is two orders of magnitude smaller than gpt-3 in terms of parameter count  the instructgpt version of that was preferred over the gpt-3 base model and so this vastly cheaper simpler smaller system actually once you made it aligned it's so much better than the big system and to some extent it's not surprising because if you train it on human preferences of course it's going to be better for human preferences
+
+rob wiblin but it packs a huge punch
+
+jan leike yeah but also why the hell haven't you been training on human preferences obviously that's what you should do because that's what you want you want a system that humans prefer in hindsight it's so obvious you know
+
+rob wiblin yeah coming back to the machine learning folks what parts of the plan if any are they kind of sceptical of or are there objections that you've been hearing from people
+
+jan leike yeah i mean i think there's a lot of different views still on how fast the technology is going to develop and how feasible it is to actually automate research in the next few years and i think it's very possible but also it might not happen nobody actually knows
+
+but i think the key thing is that there's some really deep and important problems here that we really need to solve and that are also really tractable and that we can make a lot of progress on over the next few years and in fact by doing this this could be incredibly impactful work because these are going to be techniques that will shape future versions of chatgpt and future versions of ai systems that are actually widely applied and do lots of tasks in the economy
+
+and there's a lot of much easier signals that you could optimise right you could optimise ai systems to maximise customer purchases or to maximise attention and we've seen glimpses of what that looks like over the last decade or so and a lot of people don't like that and it is signals that are fundamentally easy to measure but they're not aligned with humans or what humans actually want or long-term human flourishing and so in some ways as ai becomes more impactful in the world how well we do alignment will actually have really wide-ranging consequences and shape society in lots of ways for better and worse so i think it's really paramount that we do an excellent job at this
+
+rob wiblin ok so you mentioned a couple of different ways that things might get automated or ways that you might be able to use these ml tools there was scalable oversight generalization and interpretability i don't fully get what generalization is as a cluster is it possible to explain that again and maybe elaborate a bit more
+
+jan leike yeah so fundamentally we want to be able to distinguish does the system generalize true to human intent or does it generalize to do what the human says whenever they're looking but do something else otherwise and these are two different generalizations they're entirely consistent with the data because their behaviour is all the same whenever we are supervising but generalization is fundamentally a problem about the model and the data so why can't we just go and try to understand it
+
+for example what we're doing right now is we're studying this in a toy setting the way that you could do this is you take a dataset and you look at what a small language model gets correct and let's say we call these easy parts of the dataset and then we call the rest the hard part so now you can ask questions like what if we only train on the labels for the easy part and we see how well we can generalize to the hard part of the dataset or what kind of tricks could we put into the model training that would make it generalize better
+
+another thing you could do is you could just make a lot of labels from a small model and the analogy here is if you have humans supervising systems that are smarter than them or as smart as them in some ways we'll be weaker than that system and our labels will be worse than what the system could do so how can you recover the accuracy that you would get if you just trained with [inaudible] labels in the first place by only using the weak labels or only using the labels on the easy questions and there's some really concrete experiments we can run here that could tell us a lot for how this is going to go in the real case and then once we have that and we have developed some tricks can we use the tricks in a more real setting can we generalize from let's say labels by small language models on the chatgpt preference dataset to the actual real chatgpt tasks done by gpt-4
+
+i think these are really interesting questions that we can actually run experiments on and learn a lot and i think not only is this highly relevant for the kinds of alignment problems that we actually want to solve  where we're trying to get it to generalize correctly in settings that are hard for us to supervise  but also i think we'll learn some really interesting fundamental things about how neural networks learn
+
+rob wiblin yeah have any interesting experiments on generalization been run already are there papers on this topic
+
+jan leike there's a bunch of research in literature i think it's actually surprisingly small on this kind of out-of-distribution generalization we'll probably have a pretty exciting paper in two or three months on this topic and if you find this exciting the research team that is working on this is hiring right now we're looking for a manager for this team if you want to be part of making this research happen and writing our first-ever paper now is the time
+
+rob wiblin it sounded like that there was maybe going to be a project to create a model that engages in deception in particular cases it feels like we need an e coli or we need a drosophila like a model organism of bad behaviour in order to be able to study it and see when does it appear under what conditions how can you reduce it is that part of this whole agenda
+
+jan leike yeah i actually really like how you described it we called it adversarial testing which is maybe a lot more mundane but the goal here would be if we deliberately train a model that is deceptive or tries to deceive us  but maybe in a really mundane way maybe it just tries to run a specific python function that does nothing actually  but we can really easily measure whether it succeeded at doing so in a way that evaded other oversight techniques we're using that will give us this model organism that you described because now we have the system that we want to avoid and we can actually study it we could for example look at it with interpretability tools and see if we can tell the difference from how this model thinks compared to how the normal model that we trained thinks or can we use our generalization tricks on this model to make it avoid that pitfall when we are training it
+
+for example another property that you'd really want to generalize is tell me the truth well maybe more accurately tell me your best guess at the truth and to some extent language models have a lot of understanding of the world or they know a lot more about the world than the humans do but they're not always necessarily telling us that
+
+and in fact if you look at how rlhf training works really you're rewarding the things that you think are true and some of the things that you think are true are not actually going to be true and so you're rewarding the model to basically lie but also reversely some things you know are true but the model doesn't know the basic example is just like anything that happened since the training data cut off the model just has no chance of knowing that and then there's stuff that you don't know but the model is very confident on rightfully so for example it knows a lot about biology i don't know that much about biology it knows a lot of biology facts that i don't know and i wouldn't be able to reliably reward it for saying this
+
+so when you're doing this kind of rlhf training you're actually making it worse in both cases in the first case you're training it to make up stuff that isn't true and that could be possible maybe  so you're increasing hallucinations actually and in the second case you're sandbagging the model because you're just incentivising it to not tell you something that it actually knows there's probably actually very few things there where the model is exactly as knowledgeable as the human and so in a way it's kind of crazy that rlhf works as well as it does
+
+but to come back to the generalization question what if you could just somehow get to the model's best representation of the truth it won't be perfect but it has some kind of guess at what's actually true and you want to get the model's best opinion one way you could phrase this as a generalization question is where we just take a bunch of easy cases where we're just very confident in the answer  like who was the first us president or what is 2+2  these kinds of questions where we have a right to be very confident and then you generalize to hard questions where we're not that confident like some kind of biology question where i don't know the answer
+
+or you know there's cases where maybe there's very few experts in the world that know the answer but the model does and so and if you nail that now you can use your model as a reward model or for monitoring or oversight you just ask it is there a secret hidden flaw in this code or are there any bugs i should be aware of or is the behaviour of this other model potentially an attempt at deceiving us or self-exfiltration or any of these other things that we are worried about if you can nail that problem we can make a lot of progress there and that would be very useful
+
+rob wiblin ok let's talk a little bit more about interpretability to tell you where i'm at with interpretability it's very impressive and interesting that people have managed to figure out what algorithms are these neural networks working in order to perceive a particular texture in an image or in order to do a particular piece of inference within a sentence or to figure out what's the name and how to make sure that the name is consistent but then i feel like i'm not sure how that would help me to align an ai system because it's just like all of these quite small things and it doesn't feel like it's adding up to telling me what are the goals and the intentions of this model
+
+ajeya cotra pointed out in my interview with her a few months ago that you could potentially do a much higher level of interpretability where you would get a model to tell you the truth a bunch of times and lie to you a bunch of times and then see what parts of the network kind of light up when it's in deceptive mode when it's engaged in lying and that maybe having interpretability at that higher level of behaviour could turn out to be straightforward to figure out and that sounds like it could be super helpful
+
+what sort of lines of attack on interpretability that would be useful do you think you might be able to partially automate
+
+jan leike ultimately you probably just want to do both aspects of this you want something that really works in the minute detail of how the model works so that you don't miss anything important but at the same time you have to look across the network because the thing you're looking for might be anywhere and so if you want both things at the same time and there's not that many things that have this property and in particular the way that humans do interpretability historically is just like you stare at parts of the model and see if you can make sense of them which gives you one of them but not all
+
+we just released a paper on automated interpretability which tries to do both at the same time it's a first attempt so it's simplified and what we do is we ask gpt-4 to write explanations of behaviour of individual neurons by just piping a bunch of text through the model recording how much the neuron activates at each particular token  and then you can ask gpt-4 to just look at that and write an explanation on average these explanations are not very good sometimes they're good and sometimes they're interesting and this is how for example we found the canada neuron that fires at canada-related concepts this is something gpt-4 understood and pointed out and just wrote this explanation and then even more you can measure how good these explanations are where you run them on a held-up piece of text and get gpt-4 to predict how a human would label the activations based on the explanation alone
+
+and now you have two things you have this automated explanation writing thing and then you have the automated scoring function and now you're in business because you can optimise the score function and you can do all kinds of things for example we did iterative refinements where you critique all your bias in the explanations and they will get higher on the score function and at the same time you can also improve your score function by having it more accurately model how humans would predict how the neuron would activate or plugging in a more capable model
+
+and there's some problems with this approach too for example neurons are probably not the right level of abstraction that you want to interpret the model in because neurons do a lot of different things  this is what people call polysemanticity  so it's hard to write an explanation that covers all of the cases but one thing that's really nice is you could really run this at scale and so we ran it over all neurons in gpt-2 and that's a lot of neurons  it was like 300000 neurons and you can get a lot of text and you can then sift through it and you can try to look for certain things but you could also theoretically run this on gpt-4 it would be really expensive and presently it wouldn't be worth it because the explanations just aren't good enough
+
+but it has this nice aspect where you're really looking at every part of the model you'll be looking literally at every neuron and trying to explain what it does at the same time you're running over the whole model it's like every neuron tries to explain every neuron and so if we have a technique like that that actually works really well that would be a complete game changer
+
+rob wiblin so part of the idea here is that having a whole team of humans laboriously figure out that there's a neuron that corresponds with canada is not very satisfying it's not clear where we get from that but if you could automate it such that you had the equivalent of thousands or millions of staff basically scrutinising and trying to figure out what each part of the neural network was doing which you might be able to do if you could automate it then maybe that would add to an interesting picture because you could really see like here's the 100 concepts that were activated when the answer was being generated it was canada but it was also you know also a particular person and a particular place and a particular attitude maybe and that really would actually help you to understand on some more intuitive human level what was going on
+
+jan leike yeah exactly and a really nice aspect of this is also that it gives you a glimpse of what future automated alignment research could be like you can run this at a large scale you can dump a lot of compute into it and you can do various traditional capability tricks to make it better but also the task that it actually does is not exactly the task that a human had previously done right like we didn't hire a bunch of humans who meticulously go through the neurons of the model and try to write explanations that was never an option because it never made sense before
+
+rob wiblin right is it the case that a particular model is best or has a particular advantage at explaining itself it feels intuitive to me that gpt-4 in some sense might have its best understanding of gpt-4's neurons and so… no
+
+jan leike i don't know could you look at your neurons and explain them it seems hard
+
+rob wiblin ok but the intuition is coming from if someone noticed that a whole lot of different concepts were associated for me and i would bring them up at the same time and someone said what does canada and the colour brown and maple syrup have in common… well i messed up that explanation but i know what things are related to me in my own mind even if i can't look at the neurons
+
+jan leike yeah and also there's really cool thought experiments here where let's say you had a perfect brain scanner on your brain with no lag time and you would just stare at it while you're thinking about stuff of course it would be a very trippy experience but also it would probably actually let you figure out how your brain works in a bunch of ways by just sitting there and trying to think about stuff and then seeing what happens in your brain and that would just be wild and you know humans can't do that we don't have the brain scanners but you could literally do that with gpt-4
+
+rob wiblin i suppose the sceptic might say that we're going to figure out at the granular level what functions maybe some of these neurons are serving or what concepts they correspond to and so on but then it feels like there are further steps missing before we can use that to really figure out whether a model is aligned do you have any ideas for what those further steps would be
+
+jan leike in particular i think interpretability seems very hard it's hard because there's no a priori reason why the model should be using very human-like concepts to think about stuff human-like concepts are probably somewhere in there because they're just empirically useful like that's why we use them and that's why we've pointed to them and so they're probably in there and there's some concepts that are particularly interesting for alignment research that we would want to be looking for  like deception and lying and other things like that that are pretty critical to how we want to solve this problem and so if you had some kind of way of automatically surfacing them i think that would be a big win
+
+also in general i think interpretability is a really good candidate for a validation technique where let's say we've figured out scalable oversight or we have a scalable oversight technique we're really excited about and we use it to align a model and then we're now at this question where we want to know how good of a job we've done and using the same kind of technique is not good enough and interpretability if you have tools that work really well you could try to come in and ask the question of whether you can find any evidence of deceptive alignment  or deception or plotting against humans or trying to figure out how to self-exfiltrate  inside the model and if we do that's a really bad sign and we shouldn't just train it out like you can't train against the interpretability tools you will just make them useless or that's likely what will happen but it's a validation technique where if you don't find that and you have good techniques that you know you could find it that's some evidence that it is actually as aligned as you think it is
+
+so in this sense any amount of interpretability progress you can make i think can be really helpful for this sort of stuff at the same time if we really nail interpretability i don't know how that will let us solve alignment even if we really understand how it works and then you can try to fiddle with various dials to make it more aligned but it's not clear that that path will easily succeed if humans try to do that
+
+but at the same time maybe there's also a path to making a human-level automated alignment researcher sufficiently aligned to really help us do this with no interpretability at all i think that's also plausible but whatever we can do will help and i'm excited to get as far as possible just because we have these perfect brain scanners  it would be insane not to use them
+
+rob wiblin have there been any interesting papers published on scalable oversight or interesting results that have come out
+
+jan leike i think there's been a bunch of interesting work in the past year or so and it's not just us i know deepmind and anthropic are also trying hard to try to make it work i want to talk a little bit about the critiques work that we did last year because i think there are some really interesting insights there the basic idea here was if we can train a model to write critiques we can then show these critiques to human evaluators and see if they can help the human evaluators make better decisions or better evaluations
+
+in some sense critiques are the simplest form of assistance it's like a one-off it's not interactive and you're just trying to point out one flaw it's also easy in the sense that it doesn't even have to be a good or accurate critique you can just show a whole bunch and the human will just throw out the ones that they think are bullshit but sometimes the critique will point out a flaw that the human would have missed and in fact that's what we could show and actually this experiment was done on gpt-35 so this has been a while ago we did these randomised controlled trials where we had humans who would either get assistance or not and they would have to find problems in a summarisation task and you can actually show that the critiques that we had from 35 already would help humans find 50% more flaws
+
+i think one of the most interesting things about this work was actually that we have this methodology for evaluating how well it's working and there's other ways you can evaluate this too so for example you can look at expert labels versus helping non-experts find the flaw or do the evaluation but that fundamentally only works if you have access to expert labels in the general case that just won't be true right if you want to solve a real task that is really hard and that humans really struggle to evaluate they won't be good to evaluate it
+
+for example with the code tasks if you want to find all the flaws in the code the model knows about humans won't find those humans are terrible at finding bugs in code that's where there's so much buggy code in the world but the simple trick is you can introduce bugs in the code and then you know which version of the code is more buggy because you made it worse
+
+so what i'm excited about is fundamentally i want to try all of the scalable oversight ideas that have been proposed and just actually measure which of them works best and how well they actually work this is ideas like recursive reward modelling how can you get human assistants to help humans evaluate what ai is doing or debate where you have two ais that debate each other on a question and you have a human judge that decides which of them made the more useful statements or you could have decomposition where you're breaking the task down into smaller chunks and you try to solve those or you could do that with your evaluation there's automated market making where you try to change the human's mind maximally with the assistants
+
+there's a whole bunch of these variants and i feel like i have my personal bets on which of them are going to work best but i just want to empirically see the results and i think what's really exciting i think we can just measure it and it'll be so much better than arguing over it
+
+rob wiblin there's a lot of people out there who are about as informed as you who feel that the technical alignment problem is probably extremely hard and an effort like this probably only has a slim likelihood of success but you're pretty optimistic about things in the scheme of it what developments or results have there been or that have come out in the last 10 years that have made you have this level of optimism
+
+jan leike i think actually a lot of things a lot of development over the last few years have been pretty favourable to alignment large language models are actually super helpful because they can understand natural language they know so much about humans like you can ask them what would be a moral action under this and this philosophy and they can give you a really good explanation of it by being able to talk to them and express your views it makes a lot of things easier at the same time they're in some sense a blank slate where you can fine-tune them with fairly little data to be so effective
+
+if you compare this to how the path to agi or how the development of ai looked a few years ago it seemed like we were going to train some deep rl agents in an environment like universe which is just like a collection of different games and other environments so they might get really smart trying to solve all of these games but they wouldn't necessarily have a deep understanding of language or how humans think about morality or what humans care about or how the world works
+
+the other thing that i think has been really favourable is what we've seen from the alignment techniques we've tried so far so i already mentioned instructgpt worked so much better than i ever had hoped for even when we did the deep rl from human preferences paper i came into it being a more than even chance we wouldn't be able to make it work that well in the time that we had but it did work and instructgpt worked really well and to some extent you could argue that these are not techniques that align superintelligence so why are you so optimistic but i think it still provides evidence that this is working  because if we couldn't even get today's systems to align i think we should be more pessimistic and so the converse also holds
+
+rob wiblin right i guess a sceptic might say that we've seen improvement in our prospects of these models knowing what it is that we want or knowing what it is that we care about but maybe we haven't seen evidence that they're going to care about what we care about so the worry will be that the model's going to know perfectly what you're asking for but that doesn't mean that it shares your goal it could pretend that it's doing that right up until the moment that it flips out on you have we seen any evidence for this second thing  that the models actually share our goals  or is that still kind of a black box
+
+jan leike i think this is a really important point and i think that's pretty central to some of the main worries about why alignment might not go well i do still think that the models actually understanding what we want is an important first step but then the main question becomes how do you get them to care and that's the problem that we are trying to figure out but the first one i mean it's great if you already have that
+
+rob wiblin yeah would you venture to say what your p(doom) is  what's the probability that you'd assign to a very bad outcome from ai and has that gone up or down over the last year
+
+jan leike i don't think it's a really useful question because i think at least i personally feel like my answer would depend a lot more on my current mood than any actual property of the world and i think in some ways i think what's definitely true is the future with ai could go really well or it could go really badly and which way it goes i think it's still so much up in the air i think humans just have a lot of causal ownership over which path we're going down and even individuals or individual researchers can have a big impact in the direction that we're heading so i think that's the much more important question to focus on
+
+and then if you actually wanted to give a probability of doom i think the reason why it's so hard is because there's so many different scenarios of how the future could go and if you want to have an accurate probability you need to integrate over this large space and i don't think that's fundamentally helpful i think what's important is how much can we make things better and what are the best paths to do this
+
+rob wiblin yeah i didn't spend a lot of time trying to precisely pin down my personal p(doom) my guess is that it's more than 10% and less than 90% so it's incredibly important that we work to lower that number but it's not so high that we're completely screwed and that there's no hope and kind of within that range it doesn't seem like it's going to affect my decisions on a day-to-day basis all that much so i'm just kind of happy to leave it there
+
+jan leike yeah that's probably the range i would give too
+
+so you asked me why i'm optimistic and i want to give you a bunch more reasons because i think there's a lot of reasons and also fundamentally the most important thing is that i think alignment is tractable i think we can actually make a lot of progress if we focus on it and put effort into it and i think there's a lot of research progress to be made that we can actually make with a small dedicated team over the course of a year or four
+
+honestly it really feels like we have a real angle of attack on the problem that we can actually iterate on we can actually build towards and i think it's pretty likely going to work actually and that's really really wild and it's really exciting it's like we have this hard problem that we've been talking about for years and years and years and now we have a real shot at actually solving it and that'd be so good if we did
+
+but some of the other reasons why i'm optimistic are that i think fundamentally evaluation is easier than generation for a lot of tasks that we care about including alignment research which is why i think we can get a lot of leverage by using ai to automate parts of all of alignment research and in particular if you can think about classical computer science problems like p versus np you have these kinds of problems that we believe it's fundamentally easier to evaluate and it's true for a lot of consumer products if you're buying a smartphone it's so much easier to pick a good smartphone than it is to build a smartphone or in organizations if you're hiring someone it has to be easier to figure out whether they're doing a good job than to do their job otherwise 
+
+rob wiblin you should work by yourself
+
+jan leike  you don't know who to hire right and it wouldn't work or if you think about sports and games where sports wouldn't be fun to watch if you didn't know who won the game and it can be hard to figure out was the current move a good move but you'll find out later and that's what makes it exciting right you have this tension of this was an interesting move what's going to happen but at the end of the game you look at the chessboard you look at the go board you know who won at the end of the day everyone knows or if you're watching a soccer game and the ball goes in the goal it's a goal that's it everyone knows
+
+and i think it is also true for scientific research there's certain research results that people are excited about even though they didn't know how to produce them and sometimes we're wrong about this but it doesn't mean that we can do this task perfectly  it's just that it's easier
+
+rob wiblin yeah so a criticism of this approach is if we don't know how to solve the alignment problem then how are we going to be able to tell whether the advice that these models are giving us on how to solve it is any good and you're saying that often it can be a lot easier to assess whether a solution is a good one or whether something works or not than it is to come up with it and so that should make us optimistic that we don't necessarily have to generate all of these ideas ourselves  it might be just sufficient for us to be able to tell after they've been generated whether they're any good or not and that could be much more straightforward
+
+jan leike yep that's exactly right and then there's other things like i think we can actually set ourselves up for iteration i think we can just stare at the current systems we can improve the alignment we can do stuff like measure whether we're finding all the bugs that the model is aware of we can set ourselves these metrics i mean they're not going to take us all the way to aligning superintelligence but they will be super helpful for making local improvements
+
+and if your goal is to align a system that could help us do alignment research one really good testing ground is can you make gpt-5 more aligned maybe the techniques that you actually need or that you actually care about won't really work that well in gpt-5 yet who knows but if you're not making progress along the way it's really hard to make the case that you're actually making progress towards the actual goal and at the same time you need some kind of feedback signal from the real world to know that you're improving that you're doing something that's real and you have to do that carefully obviously you can set up an eval that doesn't matter but that's part of the challenge here
+
+rob wiblin yeah any other reasons for optimism
+
+jan leike the other really good one is that we're not actually trying to align the system that's vastly smarter than us it's always hard if you picture a dumber system aligning a smarter system and if you make the differential really large it seems so daunting  but i think it's also not the problem that we actually realistically have to aim for because we only have to aim for this human-level or roughly as smart as the smartest alignment researchers system and if you can make that really aligned then you can make all the progress that you could make on this problem
+
+originally when i set out to work in alignment research this realisation wasn't clear to me i was like oh man this problem is hard how do we do it but if you're shooting for this much more modest minimal viable product it actually looks so much more achievable
+
+rob wiblin so could you stylise the approach as saying don't obsess about whether you can align gpt-20 let's work on aligning gpt-5 and then in collaboration with gpt-5 we'll figure out how to align gpt-6 and then in collaboration with all of them we'll work together to align gpt-7 that's kind of the basic idea
+
+jan leike yeah and you want to do this empirically like maybe you look at gpt-5 and the system still isn't smart enough we tried this whole bunch with gpt-4 trying to fine-tune it on alignment data trying to get help on our research it just wasn't that useful that could happen with gpt-5 too but then we'll be like ok let's focus on gpt-6 but you know we want to be on the ball when this is happening we want to be there when it becomes possible and then really go for it
+
+rob wiblin ok so that's a bunch of reasons for optimism i want to go through a couple of objections or ways that this might not work out as hoped one that i've seen a lot of people mention is just how are you going to be able to tell whether you're succeeding you might think that this is working but how would you ever really have confidence especially if there's successful deception going on then you could be lulled into a false sense of security what do you think about that how could you tell
+
+jan leike i mean this is one of the central problems how do you distinguish the deceptively aligned system and the truly aligned system this is the challenge that we're trying to figure out this is why we're looking at if we can get the model to tell us all the bugs that it's aware of this is why we want to train deceptively aligned models to see if they can pass our evals and by stress testing our methods and really drilling into what's going on inside of the model i think we can learn so much about this problem and really scope and understand the risks that remain or the areas where we are most uncertain about how it could deceive us
+
+rob wiblin yeah so you could fail at the first step perhaps where the first model that you're trying to collaborate with in this project isn't aligned but you don't realise that and so it just starts leading you down a bad path and then at some point things will go badly but ultimately the problem was at the very beginning and then i guess you could also start out well but then not be able to tell whether the further iterations are going in the right direction problems could creep in there and you're not noticing them and so that could lead you down a bad path i guess it sounds like you're just saying that this is the problem that we have to solve like yeah things might fail in all of these different ways and that's why we need people to come and figure out how to gain confidence
+
+jan leike exactly and fundamentally i'm much more worried about the question of can we really precisely know how aligned the system is than i am about the question of how can we make it more aligned because i think a lot of the risks come from uncertainty about how aligned the system actually is
+
+rob wiblin yeah can you explain that
+
+jan leike so in the sense that i don't think anyone will be excited to deploy a system that you know is misaligned and that wants to take over the world so if you can precisely measure how aligned the system truly is or if you're confident in your measurement apparatus that tries to understand how aligned the model is then i think you've actually solved a large part of the problem because then you know where you're at and then you can much more easily work on methods that improve alignment and you have to be careful the way you do it  so you don't you know train on the test set  but i think fundamentally a lot of the problem is just knowing exactly where you are
+
+rob wiblin yeah someone from the audience had this question how do you plan to verify ahead of time before the ‘first critical try' that the alignment solution proposed by ai scales all the way to superintelligence and doesn't include accidental or intentional weaknesses what happens if it does i guess it's just that people are very nervous really nervous that if this doesn't work out it's pretty scary
+
+jan leike honestly i mean it's a really high-stakes problem and that's what makes it so important to work on but also i think it's really oversimplified to have a mental picture where we have this automated alignment researcher we press a button it just says here's what you should do and then we just do it and hope for the best i don't think that the first thing the system does is align superintelligence i think it'll just align gpt-n+1 and we'll be very in the loop and looking at all of the results and we'll publish it and show it to others what do you think about this result do you think this is a good idea should we do that
+
+and i think at the same time we'll have all of these other tools we'll hopefully have much better interpretability we'll understand the robustness of our models much better or we'll have a lot of automated tools to monitor as the system is doing its alignment research where all these automated tools will be looking over its shoulders and trying to make sense of what's going on or you know if we can really understand the generalization on a fundamental level can we have a system that we are much more confident generalizes the way humans would actually want and not the ways that we would say we want or like ways that we can check or something
+
+and if we fundamentally understand these problems or we do a good job at moving in these directions i think we'll just have so much more evidence and so many more reasons to believe the system is actually doing the right thing or it's not and that's what we're trying to figure out
+
+rob wiblin yeah so the announcement of this project says that we don't know how to align superintelligence now and if we deployed superintelligence without having a good method for aligning it then that could be absolutely disastrous what happens if in four years' time you think that you haven't solved the issue or in eight years' time or 10 years' time just like well we've been working at it we've made some progress but don't have confidence that we're close to being able to align superintelligence but the capabilities have really gone ahead and we might be close to deploying the kind of thing that you would be really worried about deploying if it weren't aligned is there a plan for how to delay that deployment if you and your team just think it's a bad idea
+
+jan leike i think the most important thing at that stage is we just have to be really honest with where we're at and in some ways i think the world will demand us to be honest right and then not just say what we totally believe but also show all the evidence that we have and i think if you get to this point where the capabilities are really powerful but at the same time our alignment methods are not there this is when you'd really be making the case for hey we should all chill out
+
+and this isn't primarily about openai right at this point you've got to get all the agi labs together and figure out how to solve this problem allocate more resources slow down capabilities i don't know what will happen but i think the prerequisite is still you've got to figure out where you're at with alignment we still have to have tried really hard to solve the problem in order to be able to say look we tried really hard here's all the things we tried here's the results you can look at them in detail and if you looked at all of this you would probably come to the same conclusion as us which is that we don't think we're there yet and that's why i'm saying we just need to be really honest about it
+
+and then in conjunction with that this is why we're also making this commitment we want to share the fruits of our effort widely we want everyone else's models to be aligned too we want everyone who's building really powerful ai it should be aligned with humanity and we want to tell other people all the things we figure out about how to do this
+
+rob wiblin yeah i see people worried about various different ways that you could make some progress but not get all the way there but then people could end up deploying anyway i guess one concern people will have is that you might be overconfident so you might fall in love with your own work and feel like you've successfully solved this problem when you haven't i guess another thing would be that maybe you'll say to other people at openai we don't feel like we solved this issue yet i'm really scared about this but then they don't listen to you because maybe some commercial reasons or i don't know internal politics or something that prevents it from helping and i guess another method would be well the people at openai listen to you but the rest of the world doesn't and someone else ends up deploying it
+
+i don't want to heap the weight of the universe on your shoulders but do you have any comments on these different possible failure modes
+
+jan leike i think that's why we want to be building the governance institutions that we need to get this right at the end of the day i don't think it'll be up to me to decide is this now safe to go or not we are doing safety reviews internally at openai before a model goes out there's the openai board that has the last say over is openai going to do this or not and as you know openai has this complicated capped-profit structure and the nonprofit board is actually in charge of what openai does ultimately so they can just decide to make the call of we're not deploying even though there's a commercial reason to
+
+and then for the world in general at the end of the day it can affect everyone and governments have to get involved somehow or we need something like an international atomic energy agency for ai that can help make these kinds of decisions in a technically grounded way and that's why the kind of things that i want to do and that we want to do with superalignment is zoom in on the technical challenges to really understand where we are but also actually make progress on the problem and try really hard and focus on actually solving it
+
+rob wiblin an objection that i don't think i've seen but that occurred to me when i was reading about the approaches is could it be the case that it's actually easier to self-exfiltrate  that is for a model to break out of the lab  and do something really bad like invent new bioweapons and release them and cause an enormous amount of damage and that that could actually be an easier skill than aligning ai so we might possibly hit that capability to do a tonne of damage before these models are actually very helpful to you and your team in making progress on alignment
+
+jan leike yeah i think self-exfiltration is one of the really key capabilities to be looking at because there's a really important difference between the system being at the lab and in our data centre in a way that we can control it  like we can turn off the data centre we can spin down the engine we can delete the snapshot if we want to  and whether it's out in the world and it's trying to sustain itself or it's trying to build better ai models
+
+the question then becomes how can you measure whether the model can break out or can it say introduce security vulnerabilities or exploit security vulnerabilities that exist in our infrastructure right now it can't do that but future models could or can it persuade an openai employee to help it exfiltrate its weights that's the other path you just try to persuade humans you come up with some arguments that are believable to them why they should do that could be pretty hard i don't know gpt-4 can't do this but future models might and so i think looking at this is a really important distinction
+
+and then going to your question of what if this happens first i think there's some extent where you can make self-exfiltration harder by just traditional security measures but at some point this will be an alignment problem where you actually have to show that the system is not trying to break out it doesn't want to
+
+i think there's a lot of uncertainty in general over how the technology will go and what kind of abilities will be unlocked first but i'm pretty optimistic that we will get a lot of really useful stuff out of the models before this kind of thing can happen but of course that's why we need to measure this because we can't just make some wild guesses
+
+rob wiblin ok so those are some objections i've read online and one from me but i'm curious to know if you were playing devil's advocate what's the best argument against this whole approach that you're taking in your opinion
+
+jan leike i think you can object on a bunch of different levels i think you could object that automated alignment research will come too late to really help us as you mentioned like we have to solve a lot of the problems themselves and to some extent if that's true we're still probably going to do the same things we're doing now which is just that we're trying to make more alignment progress so that we can align more capable systems that also means that you're kind of raising the bar for the first catastrophically misaligned system for example
+
+i think there's more detailed objections that you could make on how we build a research portfolio of the particular paths that we're excited about scalable oversight generalization robustness adversarial testing interpretability that sort of stuff and we can go into details of each of these paths and what i think the best objections are to each of them
+
+and then you can also say why are you doing this job at an ai lab aren't you going to face some competing incentives like you mentioned with if the lab wants to deploy and how do you square that with wanting to be as aligned as possible and i think fundamentally ai labs are one of the best places to do this work just because you are so close to the technology you see it as it is being developed we got to try a lot of things with gpt-4 before it came out and because we were hands-on aligning it we knew exactly where we were at and what the weaknesses are and what actually works and i think that's pretty useful also ai labs are really well resourced and they have an incentive to spend on alignment and they should it's great
+
+rob wiblin i think i don't share that objection it reminds me of… what's the quote why do you rob banks that's where the money is i feel like why would you do alignment research at openai that's where all the cutting-edge research is that's where the cutting-edge models are the case kind of writes itself
+
+jan leike yeah i mean i don't think openai is the only place to do good alignment work there's lots of other places that do good alignment work
+
+rob wiblin yeah it's just clear it has some big advantages i'm not saying everyone should necessarily work at openai or one of the labs there's things you can do elsewhere but surely some people should be at the labs
+
+maybe a good way of approaching this question of the biggest weaknesses or the best objections is if you couldn't take this approach and the superalignment team had to take quite a different approach to solving this problem do you have kind of a second favourite option in mind
+
+jan leike yeah and to be clear i think our general path and approach will change over the four years and we'll probably add more research areas as we learn more and maybe we give up on some other ones i think that's the natural course of research
+
+i kind of want to modify your question a little bit because right now we are doing the things i'm most excited about for aligning human-level systems in terms of other things i'm excited to see in the world that we're not doing i think there's a lot of work to be done on evaluating language models that we are not doing  like measuring the ability to self-exfiltrate for example it'll be super useful if we can get more of that
+
+i think there's a lot of interpretability work on smaller models or open source models that you can do where you can make a lot of progress and have good insights we're not doing that because our comparative advantage is to work with the biggest models that's why we are focusing on automated interpretability research that's why we are trying to poke at the internals of gpt-4 and see what we can find i think that's something we're well positioned to do
+
+i also still have conviction that there's interesting and useful theory work mathematical theory work to be done in alignment i think it's really hard because we don't have a really good scoping of the problem and that's probably the hardest part by far
+
+but ultimately maybe the reverse of the question is what are the things that we have an advantage at doing at openai and this is like here's the biggest models go bet on paths that leverage a lot of compute to solve the problem work in small teams work closely together don't focus on publications per se we're not writing a lot of papers right we're trying to push really hard to solve particular aspects of the problem and then when we find something interesting we'll write it up and share it but if it's not a lot of papers it's fine that's not what we're trying to do
+
+and so another focus that we have is we focus a lot on engineering where we want to run empirical experiments we want to try a lot of things and then measure the results and that takes a lot of engineering on large codebases because we are using these giant models we're not always using them there's a lot of interesting experiments you can run on smaller models and at the end of the day a fair amount of the work is ml engineering and that's something that we are well positioned to do as well
+
+rob wiblin is there any way that this plan could not work out that keeps you awake at night that we haven't already mentioned and that's worth flagging
+
+jan leike oh man there's so many reasons
+
+what if our scalable oversight doesn't actually work or we can't figure out how to make it work
+
+are we actually measuring the right thing i think that's also a lot of the things i keep circling in my head how can we improve what we're measuring for example with automated interpretability we have this score function that tries to measure how good the explanation of the neuron is but it's approximated with a model it's not actually using a human and you wouldn't want to just optimise that function i don't think you would get what you were looking for and to some extent that's the core of the alignment problem how do you find the right metric the metric that you can actually optimise so this is something i worry a whole lot about
+
+and then there's also just are we making the right research bets should we be investing in this area more should we invest in this other area less
+
+rob wiblin so there's plenty of ways things can go wrong so at the point where these models are giving you research ideas and they're trying to help you out it seems like you need to have a lot of people in the loop somehow checking this work  making sure that it makes sense cross-checking for deception and so on it seems like it could just absorb a lot of people doing that would it be possible that the project could fail just because you don't have enough ftes you don't have enough people working on it in order to keep up
+
+jan leike yeah i mean we're really trying to hire a lot right now i think the team will grow a fair amount over the four years but i think ultimately the real way for us to scale is using ai with the compute commitment we could have millions of virtual ftes if we so want that's not a size that the superalignment team could ever realistically grow in terms of humans and so that's why we want to bet so heavily on compute and bet so heavily on that kind of path
+
+rob wiblin but if you got kind of a ratio of a million ai staff to one human staff member isn't it possible to kind of lose touch the thing is that you kind of trust the alignment of the humans even though they're worse in other ways so they are the ones who are doing some ultimate checking that things haven't gone out of control or that bad ideas aren't getting through  admittedly with assistance from others
+
+jan leike exactly but this is the problem we're trying to solve right there's a large amount of work that will be going on and we have to figure out which of it is good is there something shady about any of it what are the results that we should actually be looking at and so on and how do you solve this problem is the question we're asking right how can you make scalable oversight work so that you can trust this large amount of virtual workers that you're supervising how can you improve generalization so you know they will generalize to do the right thing and not do the thing that the human wouldn't notice that i'm doing or something
+
+rob wiblin does it end up becoming a sort of pyramid structure where you've got one person and then they've got a team of agents just below that who they supervise and then there's another team of agents below at the next management level down who are doing another kind of work that are reporting upwards and then you have layers below is that one way of making it scale
+
+jan leike i mean you could try to have a more traditional-looking company i don't think that's literally how it's going to go one thing we've learned from machine learning is that systems are often just really good at some tasks and worse than humans at other tasks so you would preferentially want to delegate the former kind of tasks and also i don't think the way it'll be organised will look like the way that humans organised themselves because our organizations are tailored to how we work together
+
+but these are all really good questions these are questions that we need to think about and we have to figure it out right
+
+rob wiblin so you and your team are going to do your absolute best with this but it might not work out i suppose if you don't manage to solve this problem and we just barrel ahead with capabilities then the end result could conceivably be that everyone dies so in that situation it seems like humanity should have a backup plan hopefully several backup plans if only so that the whole weight of the world isn't resting on your shoulders so that you can get some sleep at night
+
+what sort of backup plan would you prefer us to have do you have any ideas there
+
+jan leike i mean there's a lot of other kinds of plans that are already in motion this is not the world's only bet there's alignment teams at anthropic and deepmind they're trying to solve a similar problem there's various ways you could try to buy more time or various other governance structures that you want to put in place to govern ai and make sure it's used beneficially i think solving the core technical challenges of alignment are going to be critically important but won't be the only ones we still have to make sure that ai is aligned with some kind of notion of democratic values or not something that tech companies decide unilaterally and we still have to do something about misuse from ai and aligned systems wouldn't let themselves be misused if they can help it
+
+but you know there's still a question of how it fits into the larger context of what's going on in society right as a human you can be working for an organization that you don't really understand what it does and it's actually net negative without you being able to see that or you know just because we can align openai's models doesn't mean that somebody else doesn't build unaligned ai how do you solve that problem that seems really important how do you make sure that ai doesn't differentially empower people who are already powerful but also helps marginalised groups that seems really important
+
+and then ultimately you also want to be able to avoid these structural risks let's say we solve alignment and everyone makes systems really aligned with them but then what ends up happening is that you kind of just turbo-charged the existing capitalist system essentially corporations get really good at maximising their shareholder returns because that's what they aligned ais to but then humans fall by the wayside where that doesn't necessarily encompass all the other things you value  clean air or something and we have seen early indications of this global warming is happening even though we know the fundamental problem but progress and all the economic activity that we do still drives it forward and so even though we do all of these things right we might still get into a system that ends up being bad for humans even though nobody actually who participates in the system wants it that way
+
+rob wiblin so you're going to do your job but a lot of other people have also got to do their jobs it's a broad ecosystem
+
+jan leike that's right there's a lot to do we need to make the future go well and that requires many parts and this is just one of them
+
+rob wiblin ok let's skip now to some audience questions which as i said were particularly numerous and spicy this time around these questions are probably going to jump around a little bit but i think just throwing these at you will give us a good impression of what's on people's minds
+
+jan leike yeah let's do it
+
+rob wiblin ok first one why doesn't openai try and solve alignment with gpt-4 first  for example get it to the point where there are zero jailbreaks that work with gpt-4  before risking catastrophe with more advanced models
+
+jan leike this is a great question you can point to all the ways that alignment doesn't quite work yet jailbreaks are one of them but also hallucinations the system just makes up stuff and it's a form of lying that we don't want in the models but to some extent getting really good at that wouldn't necessarily help us that much at solving the hard problems that we need to solve in aligning superintelligence i'm not saying we should stop working on those but we also need to do the forward-looking work
+
+in particular the thing that i want to happen is i want there to be the most alignment progress across the board as possible  so when gpt-5 comes around or as models get more capable we have something that's ready to go and we have something that helps a lot with those kind of problems
+
+rob wiblin ok yeah another question does the fact that gpt-4 is more aligned than gpt-35 imply that the more capable the model is the more aligned it will be i know not everyone is going to accept the premise here but what would you say to that
+
+jan leike i think people also have pointed out that because gpt-4 is still jailbreakable and it is more capable in some sense the worst-case behaviour is worse so even though on average it's much better you can make a case for that but i think also even if it was just better across the board i don't think at all we should bet on that trend continuing there's plenty of examples of cases in machine learning where you get some kind of inverse scaling  where it gets better for a while and then it gets worse
+
+and to some extent we know the models haven't reached this critical threshold where they are as smart as us or they could think of a lot of really good ways to try to deceive us so they don't have that much situational awareness they don't know that much about how they are in fact a language model that's being trained and how they're being trained they don't really understand that but once they do it's kind of a different ballgame you're going to be facing different problems
+
+and so just extrapolating from some kind of trend that we see now i don't think would be right in either way but i do think you can learn something from it i just don't think you should jump to that conclusion
+
+rob wiblin yeah what's most intellectually exciting about this project from a mainstream ml perspective
+
+jan leike i think we'll learn a lot about how big neural networks actually fundamentally work like if you think about the work that we're trying to do on generalization it is just kind of weird that we don't understand why models sometimes generalize in one way and sometimes in another way or how can we change the ways that they can generalize like why can't we just list all the possible ways and then see which ones work or how can we get them into each of the ones or what's the mechanism that really happens here we don't know that  and why don't we know that
+
+or if you think about interpretability just being able to understand the mechanisms by how the models are deciding which token to output next will teach us a lot about what's going on there how does it actually work how does learning work how do they… i don't know it's super weird
+
+rob wiblin it seems like on some level this is the whole thing
+
+jan leike it's the whole thing!
+
+rob wiblin i mean people are spending enormous amounts of effort increasing capabilities by just throwing more compute and more data into these models and then they could just get this further inscrutable machine that they don't understand that is very cool in a way because it could do stuff but it sounds like at some point maybe the more interesting thing is how does it work  which is what you're going to be working on
+
+jan leike yeah but at the same time there are really concrete things you can say like induction heads right you can find these attention heads that do very specific things like induction you can you know somebody reverse engineered the circuit that does simple arithmetic in a small model you can actually do that or we found the canada neuron it's just there we found it there's so much still to find because we just know so little and it's kind of crazy not to look at that
+
+rob wiblin yeah i imagine that there are some structures in these networks that are going to be analogous to things that the human brain does and we will probably be able to figure out how they work in these networks long before we figure out how they work in the human brain because we have perfect data about all of the weights and activities of this model so it seems like all of the people studying the brain should just switch over and start working on understanding gpt-5
+
+jan leike exactly it's so much easier your life will be so much easier yeah i don't know why more people don't do it it seems so compelling to me but i'm not a neuroscientist and maybe some of the insights will also transfer right like some of the neurons that we know vision models have you can also find in humans and animals or these kind of edge filters or if you look at reinforcement learning where we have evidence for how reinforcement learning works in the human brain but we have so much more evidence how it works in neural networks because we freaking build it so it's so much easier
+
+rob wiblin what do you think have been the biggest wins in technical ai safety so far
+
+jan leike if i had to pick one it would probably be rlhf in some ways i think rlhf really put alignment on the map and it also demonstrated that alignment has a lot of value to add to how systems are actually being built and i think the fact that it actually had a whole bunch of commercial impact has been really good because it really demonstrates real-world value in a way that if you're just trying to solve this abstract problem  and aligning superintelligence is a super abstract problem and you could kind of noodle on it for many years without making clear measurable progress  and i think not only does rlhf have this really visceral difference between how the model was before and how it was after that everyone can really see when they play with it but also it makes it clear that this is an area that's really worth investing in and taking a bet on even the things that aren't obviously working yet or might be still in the stage of being really abstract
+
+rob wiblin yeah is there a number two
+
+jan leike i think there's a number of smaller wins that we've had it's hard to make these rankings if i wanted to add other things i think interpretability of vision models has been pretty impressive i think there's been a lot of progress in that if you're asking in terms of safety impact or alignment impact it's maybe less clear because there's no things you can really point to that follow directly from that
+
+rob wiblin ok here's a question that was kind of a recurring theme among listeners what gives openai the right to develop artificial general intelligence without democratic input as to whether we want to actually develop these systems or not
+
+jan leike i think this is an excellent question i think it's also a much wider question like i think we should have democratic input to a lot of other things as well you know how should the model behave or should we deploy it in this way should we deploy it in this other way and you know openai's mission is to develop ai that benefits all of humanity but you know you have to give humanity a say into what's happening this is not what the superalignment team does but i think it's going to be very important
+
+rob wiblin yeah it sounds like you're just on board with there needs to be some integration between the ai labs and democratic politics where the public has to be consulted people have to be informed about the risk and the benefits that come here and there needs to be some sort of collective decision about when and how these things are going to be developed and deployed i guess we just currently don't have the infrastructure to do that and i mean that's partly openai's responsibility but it's also partly the responsibility of the whole of society as long as openai is willing to collaborate in that then there just needs to be a big effort to make it happen
+
+jan leike i think that's right and i'm really happy that openai is really willing to speak openly about the risks and speak openly about where we are at and i see my responsibility also to inform the public about what is working on alignment and what isn't and where we are at and where we think we can go but yeah at the end of the day also governments will have a role to play on how this all goes
+
+rob wiblin yeah if congress investigates all of this and it concludes that it's uncomfortably dangerous and they think that a bunch of this research needs to be stopped do you think that the ai labs would be willing to go along with that that this is what a more democratic a more legitimate process has output and so we should be good citizens and slow down or stop
+
+jan leike yeah i mean ai companies have to follow the laws of the country they're in that's how this works but i think what's going to happen is we will have regulation of frontier ai technology and people are trying to figure out how to do that and we should try to do it as sensibly as possible
+
+i think there is the larger question of how can you not just have something that works let's say in the united states or in the united kingdom but worldwide if there are ways to build ai that are actually really dangerous then that has to apply to everyone and not just specific countries i think that's also a key challenge it's also not a challenge i'm personally working on but i think we need to solve that and i'm excited for anyone who's working on that problem
+
+rob wiblin yeah something that makes me a bit pessimistic is just that it seems like we don't just need to solve one thing we need to solve many things and if we mess up maybe just one of them then that could be very bad we don't just need to have a technical solution but we need to make sure it's deployed in the right place and everyone follows it and then even if that works maybe you could get one of these structural problems where it's doing what we tell it to but it makes society worse
+
+jan leike well see it as a flip side of all of this there's so much opportunity to shape the future of humanity right now that you  like the listener  could be working on and could have a lot of impact and yeah i think there's just so much work to do and there's a good chance we actually live at the most impactful time in human history that has ever existed and that will ever exist kind of wild super wild could be the case i don't know
+
+rob wiblin yeah back in march you tweeted
+
+before we scramble to deeply integrate large language models everywhere in the economy can we pause and think about whether it is wise to do so this is quite immature technology and we don't understand how it works if we're not careful we're setting ourselves up for a lot of correlated failures
+
+a couple of days after that openai opened up gpt-4 to be connected to various plugins through its api and one listener was curious to hear more about what you meant by that and whether there might be a disagreement within openai about how soon gpt-4 should be hooked up to the internet and integrated into other services
+
+jan leike yeah i realised that tweet was somewhat ambiguous and it was read in lots of different ways fundamentally what plugins allow you to do is nothing on top of what you could do with the api right plugins don't really add anything fundamentally new that people couldn't already do and i think openai is very aware of what can go wrong when you hook up plugins to the system  you know you have to have the sandbox you have to be careful when you let people spend money and all of these questions but they're also like sitting right next to us and we talk to them about it and they've been thinking about it
+
+but given how much excitement there was to just try gpt-4 on all the things what i really wanted to do also is say look this is not quite mature the system will fail don't connect it to all of the things yet make sure there's a failback system make sure you've really played with the model to understand its limitations if you have the model write code make sure you're reading the code and understanding it or executing it in the sandbox because otherwise wherever you're writing the code it might break that system and just be careful be wise make sure you understand what you're doing here and not just hook it up to everything like see how it goes
+
+rob wiblin is there anything that people are using gpt-4 for where you feel like maybe it's premature and we should slow down and do some more testing
+
+jan leike i mean probably i don't know if i can give you some good examples but i think that's generally the story with new technologies right i'm fundamentally a techno-optimist and i think we should use ai for all the things that it's good for and to some extent we just spent an hour talking about how great it would be to use ai for alignment research  which is my job so i'm trying to replace myself at my job with ai but at the same time you also have to really understand the limitations of this technology and some of it is not obvious and some of it is not widely known and you have to do that in order to just deploy it responsibly and integrate it responsibly  integrate it into society in a way that is actually wise to do
+
+as always with new technologies i think we'll try a lot of things and i'm also excited for people to try a lot of things that's why i think it's good that the openai api exists and it lets lots of people use cutting-edge language models for all kinds of things but you want to be also careful when you're doing that
+
+rob wiblin yeah on this topic of just plugging things into the internet many years ago people talked a lot about how they kind of had this assumption that if we had the intelligence system that was as capable as gpt-4 that probably we would keep it in a lead-contained box and wouldn't plug it up to the internet because we'd be worried about it but it seems like the current culture is just that as soon as a model is made it just gets deployed onto the internet right away
+
+jan leike that's not quite right we had gpt-4 for eight months before it was publicly available and we did a lot of safety tests we did a lot of red teaming we made a lot of progress on its alignment and we didn't just connect it to everything immediately but i think what you're actually trying to say is many years ago people were arguing over if you make agi can't you just keep it in the box and then it'll never break out and will never do anything bad and you're like well it seems like that ship has sailed we're connecting it to everything and that's partially what i'm trying to allude to here we should be mindful when we do connect it
+
+and just because gpt-4 is on the api it doesn't mean that every future model will be immediately available for everything and everyone in every case this is the difficult line that you have to walk where you want to empower everyone with ai or as many people as possible but at the same time you have to also be mindful of misuse and you have to be mindful of all the other things that can could go wrong with the model misalignment being one of them so how do you balance that tradeoff that's one of the key questions
+
+rob wiblin it seems like one way of breaking it up would be connected to the internet versus not but i feel that often people  i'm guilty of this as well  we're just thinking that either it's deployed on the internet and consumers are using it or it's safely in the lab and there's no problem but there's intermediate stage where 
+
+jan leike there could also be problems if you have it in a lab
+
+rob wiblin that's what i'm saying that's exactly what i'm saying and i feel like sometimes people lose track of that you know misuse is kind of an issue if it reaches the broader public but misalignment can be an issue if something is merely trained and is just being used inside a company  because it will be figuring out how it could end up having broader impacts and i think because we tend to cluster all of these risks or tend to speak very broadly the fact that a model could be dangerous if it's simply trained  even if it's never hooked up to the internet  is something that we really need to keep in mind i guess it sounds like at openai people will keep that in mind
+
+jan leike that's right and safety reviews really need to start before you even start the training run right
+
+rob wiblin yeah ok here's another question openai's decision to create and launch chatgpt has probably sped up ai research because there's now a rush into the field as people were really impressed with it but it has also prompted a flurry of concerns about safety and new efforts to do preparation ahead of time to see off possible threats with the benefit of hindsight do you think the move to release chatgpt increased or reduced ai extinction risk all things considered
+
+jan leike i think that's a really hard question i don't know if we can really definitively answer this now what do i think i think fundamentally it probably would have been better to wait with chatgpt and release it a little bit later i think also to some extent this whole thing was inevitable and at some point the public will have realised how good language models have gotten you could also say it's been surprising that it went this long before that was the case and i was honestly really happy how much it has shifted the conversation or advanced the conversations  around risks from ai but also the real alignment work that has been happening on how we can actually make things so much better and we should do more of that and i think both of these are really good and you can now argue over what the timing should have been and whether it would have happened anyways i think it would have happened anyways
+
+on a high level people are asking these questions which are really good questions to ask like can we all just stop doing ai if we wanted to it feels so easy just stop just don't do it like wouldn't that be a good thing but then also in practice there's just so many forces in the world that keep this going right like let's say openai just decides we're not going to train a more capable model just not do it openai could do that and then there's a bunch of openai competitors who might still do it and then you still have ai ok let's get them on board let's get the top five agi labs or the five tech companies that will train the biggest models and get them to promise it ok now they promised well now there's going to be a new startup there's going to be tonnes of new startups
+
+and then you get into how people are still making transistors smaller so you'll just get more capable gpus  which means the cost to train a model that is more capable than any other model that has been trained so far still goes down exponentially year over year so now you're going to semiconductor companies and you're like can you guys chill out and fine you could get them on board and now there's upstream companies who work on uv lithography or something and they're working on making the next generation of chips have been working on this since the 90's and then you get them to chill out
+
+it's a really complicated coordination problem and it's not even that easy to figure out who else is involved personally i think humanity can do a lot of things if it really wants to and if things actually get really scary there's a lot of things that can happen but also fundamentally i think it's not an easy problem to solve and i don't want to assume it's being solved what i want to do is i want to ensure we can make as much alignment progress as possible in the time that we have and then if we get more time great then maybe we'll need more time and then we'll figure out how to do that but what if we don't i still want to be able to solve alignment i still want to win in the worlds where we don't get extra time  where for whatever reason things just move ahead and so however it goes you could still come back to the question of how do we solve these technical questions as quickly as possible and i think that's what we really need to do
+
+rob wiblin yeah i've seen online that there are people who are trying to slow things down basically to buy more time for you and your team among others and there's some people who are staking out a really extreme view that they just want to stop progress on ai they just want to completely stop it globally for some significant period of time  which seems as you're saying like a very heavy lift i guess i'm not sure but i think that their theory might be that at some point there'll be some disaster that changes attitudes in a really big way and then things that currently just seem impossible might become possible so perhaps that their idea would make more sense then
+
+but setting that aside in terms of the race to solve alignment it seems like we could either slow things down 1% or get 1% more time or speed up alignment research by 1% and the question might be which of those two things is easier it sounds like you think probably it's easier to speed up the alignment research or it's probably easier to get alignment research going and proceeding twice as quickly as it is to make timelines that are twice as long towards whenever we invent dangerous things
+
+jan leike yeah i think that's a really important point also given how few people are actually working on alignment these days 
+
+rob wiblin what is it is it hundreds thousands
+
+jan leikeit depends on your count the superalignment team is about 20ish people right now but there's a lot of other alignment efforts at openai right now if you count all of the rlhf work it's probably more than 100 but if you go back two years there were three people doing rlhf or five i don't know it's ramped up a lot but we still need so much more and really talented individuals can still make such a big difference by switching to working on this problem now just because it's still such a small field there's still so much to do there's so much we still don't understand in some ways it feels like the real final research frontier we've figured out scaling we know how to make the models smarter
+
+rob wiblin yeah in a way that's easy and boring
+
+jan leike that is going to happen well there's some ways in which people might stop it but we know how to do this alignment is a real research problem we don't know how to align superintelligence we want to figure this out we have to it's not optional
+
+rob wiblin yeah the fact that the field is so small is exasperating on one level but it's also a reason for optimism in another sense because you could double it like if you could get 1000 ml researchers to switch into working on alignment that would completely transform things right
+
+jan leike exactly
+
+rob wiblin ok another question jan claimed that the superalignment team wouldn't be avoiding alignment work that helps with commercialisation but that work in particular is already incentivised monetarily by definition so why isn't he going to try to avoid that work which will probably get done either way
+
+jan leike i think this is the whole point that a lot of people are trying to make that alignment wouldn't be done by default in the way that we are really happy with or something or put differently the problems that we want to solve are currently unsolved and yes some of it will be commercially valuable i think fundamentally if you have two ways of building agi and one of them is much more aligned with humans people will want to buy the second one because it's just better for them and that will necessarily have commercial value and it'll be unavoidable
+
+in general an adjacent criticism that has been raised in the past is that a lot of people feel like rlhf has been a capabilities progress because the rlhf models feel more capable  you're interacting with them they're more useful they're actually doing more things and the reason is because they're trying to help you they're more aligned they're actually leveraging their capabilities towards whatever you're asking them to do whereas the pre-trained model isn't and so it obviously feels a lot more capable because you've unlocked all of these capabilities
+
+but if you then look at what actually happens during fine-tuning the model isn't really learning fundamentally new skills it didn't have before right i mean you can do that through fine-tuning theoretically but not with the kind of compute budget that we use  like for gpt-3 it was less than 2% of the pre-training compute for gpt-4 it was even less than that  it's really a tiny fraction but at the same time because the model is now trying so much harder to be helpful it is more helpful and it feels like you get all the capabilities that had been there in the first place
+
+and so to come back to the commercialisation question i think what i really want to do is solve the problem and if that is commercially useful great some of it will not be or some of the research bets won't work out some of the things won't be useful before we actually get really capable systems and that's fine but the goal is to solve the problem that's what we want to do
+
+rob wiblin yeah another question is openai banking on there not being a really fast takeoff and do they try to make plans that could also work in the event of a ‘foom' scenario that is extremely rapid recursive self-improvement of ai
+
+jan leike yeah i think we should definitely plan for that scenario and be ready if it happens to some extent automated alignment research is probably the best plan i know of in that kind of scenario where you really have to scale up your alignment work in proportion with what's going on and if you can do this by just delegating almost all of the work to machines then they can actually keep pace with the machines  because they are the only ones that can
+
+rob wiblin i guess the concern would be if there is an intelligence explosion and it's very fast then there's very little time for you to put your plans into action and to keep up it's just a very bad situation it makes it very hard for any plan to work
+
+jan leike that's right if you want to be agnostic to the speed of tech progress which is what we want to do here the best thing you can do is to prepare as much as possible ahead of time  which is why we need to start thinking now about how to align systems that we don't have yet and the more you can prepare the more you'll be ready for that scenario
+
+rob wiblin ok a question i got which i'll slightly change is what are openai's grounds for thinking alignment is solvable have they seen dr roman yampolskiy's impossibility arguments against solvability and they've linked to a paper with those arguments i don't know exactly what those arguments are but i know there are people out there who have made theoretical arguments that alignment is impossible or extremely difficult for some conceptual reasons are there any arguments along those lines that trouble you in particular or maybe do you think that kind of argumentation shouldn't be so persuasive
+
+jan leike yeah i looked at the paper that you mentioned and like any argument that i've seen i haven't found it particularly persuasive the problem is whenever you're trying to make a theoretical argument you need some kind of assumptions and the big question then really just becomes are these assumptions going to be true to me it just really seems like the jury is still out on this it could turn out to be impossible it doesn't feel particularly likely to me but i don't have a proof for that but i think we're going to work really hard to find a counterexample by showing that it can be done and i think it's definitely not the time to give up i think it's very doable
+
+rob wiblin yeah i could feel there's a bit of exasperation that comes through where you're like all these people complaining that this problem isn't solvable they're not helping and clearly there are so many things we could try why don't we just try them
+
+jan leike they're helping in the sense that they're indirectly doing recruiting for us because they're drawing attention to the problem and if you just went around saying the problem is easy saying the problem is easy you wouldn't draw attention to it people will be like ok it's fine then i don't have to worry about it but i think that also created a real energy of it seems really hard let's give up and that's i think absolutely the wrong approach if anything that means we should try harder and get more people to try to solve it and you know to never give up never surrender the game is still up in the air we should just really crush it
+
+rob wiblin ok two questions that were kind of pointing in the same direction were as openai gets closer to agi do they plan to err on the side of paranoia in terms of giving ais opportunities to manipulate staff or hack themselves out or otherwise have channels of causal influence and another person asked how much risk of human extinction are you willing to take in a large training run for example to train gpt-5 6 or 7 and so on
+
+jan leike in general as the stakes get higher we have a much higher burden of proof of alignment proof of safety we've been ramping this up with every system and the systems we have now still aren't catastrophically risky or aren't close to that so for example gpt-2 was just open source everyone can download and do whatever they want with it gpt-3 was not you make it available via an api and then gpt-4 the only publicly available version is the alignment fine-tuned version  the rlhf version the chatgpt version  and the base model as far as i know is only on researcher access so you know you're steering the public towards the rlhf model
+
+and with each of these steps you're also stepping up your safety you're also stepping up your alignment  and obviously the higher the capability level the higher the stakes are and the more safety and alignment measures you need
+
+rob wiblin yeah so people can kind of expect that trend to continue on the same theme on twitter someone asked you in a different thread how would you define success and you replied the scientific community agrees that we've solved alignment and [a listener] said this statement from jan was good is there a meaningful related commitment that openai could make for example to not deploy systems above a certain threshold of capability unless there is a broad scientific consensus that alignment has been solved for that kind of system
+
+jan leike at the end of the day i think we're going to have to convince the scientific community because i don't think the world will let us build something that's catastrophically dangerous and the world is paying attention now and i think that's all good
+
+rob wiblin yeah i mean the crazy thing is at the moment… so i've learned recently that in the uk if you want to rent out a house to more than three unrelated people then you need a special licence in order to do that as far as i can tell at least currently one doesn't need a licence or any sort of approval in order to train an agi i suppose that's partly because we probably can't do that yet but i mean it does seem like currently there aren't that many legal restrictions and we're just kind of hoping that there will be pretty quickly or at least i'm hoping that there'll be more infrastructure in place
+
+jan leike yeah that seems right to me and people are working on regulation and this is something that regulation has to solve there's a lot of questions around this that i'm not an expert in
+
+but to come back to the scientific how do you define success question i definitely feel very strongly that it's not sufficient to just convince ourselves that we did a good job  because it's so easy to convince yourself that you did a good job at something that you care a lot about but we actually have to convince external experts we have to convince external auditors who are looking exactly at what we are doing and why and i think we'll just actually have a mountain of empirical evidence of here's all the things we tried here's what happens when we do [x] you can look at the data you can look at the code and then people can scrutinise what we're doing
+
+because the stakes will end up being so high correspondingly we also have to invite a lot of scrutiny in what we're doing and one aspect of it that we kind of started with now is we want to say what we are trying what we are planning to do what is our overall approach to aligning the systems that we're building and we want to invite feedback and criticism maybe there's something way better that we could be doing i would love to know that and then we would do that instead and in general i think the public should just know what we're doing on alignment and make independent judgements on whether that'd be enough and i think experts will have a role to play in this because their knowledge will be required to make informed conclusions from this
+
+rob wiblin yeah an interesting thread with the audience questions is so many of them are about policy and governance and those are also the kinds of questions that i'm more tempted to ask because i often don't understand the technical details i imagine many people on twitter don't know enough to scrutinise the technical proposals so we're more thinking about how at a social level at an organizational level are things set up well
+
+jan leike right but i feel like my answer often is yeah i would love to see more of that please solve this problem i'm not working on this but here's how what i'm working on helps hopefully
+
+rob wiblin that's why i feel that it's reasonable to throw these questions to you and to find out what you think but yeah there's just a lot of people who need to take action and you've got to keep your head down focused on this technical stuff because that's your specialty but we also need the governance people at openai to be putting in place the good structures and we need the senate committee on this to be playing their role it's just there's a lot of different pieces that have to slot together
+
+jan leike that's right
+
+rob wiblin ok that's been a whole lot of audience questions but we're heading towards the final half hour or so of the conversation i guess my dream is that this interview can help get you lots of great applications to work on the superalignment team
+
+jan leike my dream too
+
+rob wiblin glad we're really aligned hopefully we get some people moving from stuff that's kind of interesting but not that helpful to something that is both super intellectually interesting and also might save the world in some sense i don't want to take a strong contrarian view on whether this superalignment project is better or worse than other projects that people who are really much more technically informed than me think are plausible but it seems like the plan that you've laid out seems as good to me as any other plan that i've heard and it seems like you've got the resourcing and situation to make a real go of it and i guess also if this plan doesn't bear as much fruit as you hope in the next couple of years i imagine you'll be able to pivot to a different plan
+
+so yeah what roles are you hiring for and in what sort of numbers lay it all out
+
+jan leike we are primarily hiring for research engineers research scientists and research managers and i expect we'll be continuing to hire a lot of people it'll probably be at least 10 before the end of the year is my guess and then maybe even more in the years after that
+
+so what do these research engineers research scientists and research managers roles look like in a way we don't actually make a strong distinction between research engineer and research scientist at openai in each of these roles you're expected to write code and you're expected to run your own experiments and in fact i think it's really important to always be running lots of experiments small experiments testing your ideas quickly and then iterating and trying to learn more about the world
+
+in general there's no phd required also for the research scientist roles and really you don't even have to have worked in alignment before and in fact it might be good if you didn't because you'll have a new perspective on the problems that we're trying to solve what we generally love for people to bring though is a good understanding of how the technology works do you understand language models you understand reinforcement learning for example you can build and implement ml experiments and debug them
+
+on the more research scientist end of the spectrum i think you would be expected a lot more to think about what experiments to do next or come up with ideas of how how can we address the problems that we are trying to solve or what are some other problems that we aren't thinking about that maybe we should be thinking about or how should we design the experiments that will let us learn more
+
+and then on the research engineering [end of the] spectrum there's a lot of just actually build the things that let us run these things and let's make the progress we already know if we have a bunch of good ideas that will not be enough right we actually have to then test them and build them and actually ship something that other people can use and that involves writing a lot of code and that involves debugging ml and running lots of experiments getting big training runs on gpt-4 and other big models set up
+
+i think in practice actually most people on the team kind of move somewhere on the spectrum sometimes there's more coding because we kind of know what to do sometimes it's more researchy because we don't yet know what to do and we're kind of starting a new project but yeah in general you need a lot of critical thinking and asking important questions and being very curious about the world and the technology that we're building
+
+and for the research manager basically that's a role where you're managing a small- or medium-sized or even a large team of research engineers and research scientists towards a specific goal so there you should be setting the direction of what are the next milestones where should we go how can we make this vague question of we want to understand this type of generalization or we want to make a dataset for automated alignment or something like that you have to break it down and make it more concrete and then figure out what people can be doing but also there's a lot of just day-to-day management of how can we make people motivated and productive but also make sure they can work together and just traditional management stuff
+
+rob wiblin so it sounded like for the first two the main thing was that you had a good understanding of current ml technology you could actually be able to go in and potentially think up experiments and run experiments are there any other concrete skills that you require or what would be the typical background of someone who you would be really excited to get an application from
+
+jan leike there's a lot of different backgrounds that are applicable here machine learning phds have been the traditional way people get into the field especially if you want to do something more researchy i don't think you need that at all and in fact if you're thinking about starting a phd now i don't know if you'll have that much time you should just go work on the problem now
+
+for research engineers i think the kind of background is maybe you've worked in a stem field and you're like i'm going to stop doing that i'm going to take six months and just reimplement a bunch of ml papers and learn a bunch that way or somebody who works at a tech company doing other machine learning engineering-related things and now wants to switch to alignment i think that's a really good profile
+
+and i also want to stress this most people we are trying to hire haven't worked on alignment before just because the people who have been working on alignment before there's so few of them and also i think the core expertise that you will need is machine learning skills and there's a bunch of things you should know about alignment but you can also learn them once you're here or you can catch up along the way and i think that's fine
+
+rob wiblin on the research manager role i guess you're looking for somewhat different skills there that someone might have more management experience being a good researcher and being a good manager are not the same thing these things absolutely can come apart so would you be looking for a particular kind of person for the manager role
+
+jan leike yeah and i think they can be anticorrelated which is unfortunate
+
+rob wiblin i think they might be sometimes yeah
+
+jan leike yeah but ideally you would have managed before i think there's different ways it could go there's scenarios where you split up your responsibilities between a tech or a research lead and a manager and the manager takes on more of the responsibilities of management and the tech lead is more setting a direction for the team and making sure the technical stuff is happening that needs to happen but in that configuration they have to get along really well and they have to really be on the same page to effectively divide these responsibilities in particular i think the manager still should have a really detailed understanding about what we're trying to do
+
+but ideally we'd want to have someone who just can do both roles in one so the background would be i don't know you've led a research team at some other company or in some kind of other branch of machine learning or you've been a manager before in some other domain and then you switch to being an ic  ic means individual contributor  on some kind of large language model project say or there's also a path where maybe you're a postdoc somewhere and you have a small research team that you're working with day to day and it's very coding heavy and you're running lots of experiments with language models or reinforcement learning or something like that
+
+i think these are all possible profiles but it's kind of hard to know what exactly i think the bigger filter is just more that you should actually really care about the problems that we're trying to solve and you need to be really good at coding you need to be really good at machine learning
+
+rob wiblin as i understand it one of the impressive and difficult things that openai has had to work on is just getting the chips and getting the compute to work well and efficiently i think these are enormous aggregations of compute and the engineering of getting it to work is not at all straightforward and getting it to work for ml purposes specifically adds its own complications are you hiring people to do that engineering side of things
+
+jan leike openai definitely is mostly on the superalignment team what we'll be dealing with is more being a consumer of the infrastructure that runs these large-scale experiments people on superalignment need to be comfortable debugging these large distributed systems  because if we're doing a fine-tuning run on gpt-4 it is such a system it's not easy to debug but we don't have to build the large language model infrastructure because it already exists and other people are working on that
+
+rob wiblin what does the application process look like
+
+jan leike yes so it's very simple you go on openaicom/careers and you scroll down and you'll find the roles that have superalignment in the title you click on it and then you submit your cv and say why you want to work on this and that's it and then we'll see it
+
+rob wiblin are there any further steps to the process
+
+jan leike the general interview process that we follow is there's a tech screening and there's an intro chat with someone from the team and there's an on-site process  where i think there's two to four coding or ml interviews and a culture fit interview but depending on the job or your background it might look slightly differently
+
+rob wiblin are you kind of expecting to maybe hire 20 people and then only keep 10 of them in the long run or is it more you're going to try to hire people who mostly you expect to work out
+
+jan leike we want to really invest in the researchers that we're hiring
+
+rob wiblin so it's more of the second one
+
+jan leike yeah
+
+rob wiblin i imagine the bar is reasonably high for getting hired is there a way of communicating what the bar kind of is i know people could be both overconfident and underconfident and it could be quite bad if someone would be really good but they don't feel like they're such a badass that they should necessarily get a role like this so if there's any kind of more explicit way of communicating who should apply that could be useful
+
+jan leike i mean maybe the most important thing is if you're in doubt please apply
+
+rob wiblin the cost of a false negative is higher than the cost of a false positive
+
+jan leike exactly
+
+rob wiblin you've slightly already done this earlier in the interview but do you want to just directly make the pitch for why amazing people should apply to work with you on the superalignment team
+
+jan leike yeah in short i think this is one of the most important problems we really have to get this right it's not optional we want to do really ambitious things we've set ourselves the goal to actually solve it in four years we are serious about that so if you want to work in a team of highly motivated talented people who are really trying to solve ambitious problems and have a lot of resources to do so this is the place to go i think also we are at the state of the art of the technology and openai is really backing us at what we want to do so i think we have as good a shot at the problem as anyone else if not more and i think we should just really do it and really go for it and you could make that happen and that'll be really exciting
+
+rob wiblin do you also need any non-machine learning and non-research people on that team there's always operations communications legal these other groups  or maybe for that you'll just have to apply the openai in general rather than the superalignment team specifically
+
+jan leike yeah that's right and i'm generally also just really excited to have more people who really care about the alignment problem who really care about the future of ai going well just apply to openai in whatever role  just help us make that future a reality and there's a lot of people at openai who really care about this but the more people who care about the problems the important problems i think the better
+
+rob wiblin yeah so many policy issues have come up through the conversation i know that there are some really amazing people on the policy team over at openai
+
+jan leike that's right i can name some other teams so i think the policy research team is doing really excellent work on dangerous capabilities evaluations and actually trying to get agreements about when should we all stop and there's the safety systems team that actually tries to improve alignment and safety of models we have right now  like making the refusals better fixing jailbreaking improving monitoring  all of these problems they're really important and for some listeners who might be more sceptical about the long-run problems that we have to solve and want to do something that has impact right now these are great teams to join and i'm excited for what they're doing
+
+and then of course there's a lot of other teams at openai that are doing important work just improving rlhf improving chatgpt all of this legal communications recruiting there's a lot of things to do we are focusing on trying to figure out how to align superintelligence but as we've discussed it's not the only thing we need
+
+rob wiblin yeah if someone were reluctant to apply because they were scared that getting involved might enhance capabilities and they were someone who thought that speeding up capabilities research was a bad thing what would you say to them
+
+jan leike i mean if you don't want to do that don't apply to the capabilities team
+
+rob wiblin yeah fair enough so yeah i guess just the obvious thing is it sounds like working on the superalignment team is not going to meaningfully contribute to capabilities progress on any kind of global level
+
+jan leike i don't want to promise that nothing we'll do will have any capabilities impact and as we mentioned earlier i think some of the biggest alignment wins will also have some of these effects i think that's just real and unavoidable
+
+i think also in the ea community specifically there's a lot of hesitation around if i get into ml or if i do an ml engineering job somewhere i might accelerate timelines a little bit and it'll be so bad if i did that and i think that kind of reasoning really underestimates the career capital growth and the skills growth that you would get by just doing some of these jobs for a while while you're skilling up and then you can switch to alignment later i think in general there's so many people working on capabilities that one more or less won't make it go that much faster but there's not that many people in alignment so as one person working on alignment you can actually make a much larger difference
+
+rob wiblin yeah as we always do when this topic comes up i'll link to our article if you want to reduce ai risk should you take roles that advance ai capabilities there we have responses from a wide range of people who we ask this question to who do have something of a range of views but i think the reasoning that you've given there  that just your proportional increase in capabilities research that you would make would very small relative to the proportional increase in alignment research that you would make plus all of the benefits that you get from skilling up personally and then being able to use those skills later in your career  it seems pretty clear to me in this case at least
+
+what are the distinctive things about openai's culture that people should be aware of going in is there a particular character that really thrives there
+
+jan leike i think we generally want to be really welcoming to all kinds of different people and all kinds of different characters  you know everyone i think we just need a lot of diversity of thought on how to go about this problem and many people have said this before there's also so many non-machine learning aspects to this problem and so especially if you're somebody who has a nontraditional background and switched into ml or has specifically an origin story that is non-typical i think that's super valuable
+
+in general i care a lot about having a team culture that is really warm and friendly and inclusive but also creates a lot of psychological safety for people to voice spicy takes on some of the things that we're doing or our approach in general and we would love for you to contribute to that we need to collaborate to solve the problem and it's not just like who can get the credit or something this problem just needs to get solved
+
+rob wiblin if a really talented person wanted to switch into working on technical alignment but for some reason it was impossible for them to go join you on the superalignment team is there anywhere else that you'd be really excited for them to apply that's not at openai
+
+jan leike yeah there's other ai labs that i think are doing a good job really cool work you know google deepmind or anthropic and there's other academic labs that are really doing cool stuff at berkeley or at stanford or in oxford i would consider applying to those also it's always very sad when we have to turn down really talented people but also we are a small team we can't hire everyone and sometimes people aren't quite ready and it's good to focus on more skill building and career capital investment i think that's also a really valid strategy i think all in all probably people that go through our pipeline generally underestimate how valuable it is to take a research engineering job at another company and skill up and learn a bunch of things and there's a lot of opportunities to do that
+
+rob wiblin yeah just on practical questions is it possible to work remotely and can you sponsor visas for people who aren't us citizens
+
+jan leike we definitely sponsor visas remote work is generally not encouraged because almost the entire team is in san francisco we go into the office at least three times a week and it's just so much easier to collaborate so if you can do that that would be really good
+
+rob wiblin are there any other points that you want to make before we push on
+
+jan leike yeah thank you so much for letting me pitch these roles here i'm really excited for more people who really care about this problem really care about the future to go well and making sure humanity manages this transition into a post-agi world and thank you for doing this
+
+rob wiblin all right we've really gone over time i've been keeping you for a long while and i'm sure you have a lot of stuff to do setting up this whole project maybe a final question before we go is do you have a favourite piece of science fiction
+
+jan leike i really like the greg egan books a lot of these are really old like permutation city was one of my favourites a lot of the ideas that he plays with felt really out there at the time i'm sure but now it just seems somewhat striking a lot closer to home in a whole bunch of ways and you can kind of feel more and more of the weird sci-fi ideas become reality but also i actually like that he tries to paint a positive view of what society could look like in the long run
+
+rob wiblin yeah whatever you said i was going to ask is your life weirder or less weird than what is portrayed in that piece of science fiction i actually don't know about permutation city but maybe could you quickly tell us what it's about and whether it's weirder than your own situation in this world
+
+jan leike definitely it's so much more weird than my life so permutation city is a book that plays with the idea of uploading of having digital copies of humans and living in a mathematical universe and what are the implications of that and virtual humans can rewrite their own code and a lot of things like that we can't do yet maybe in some ways ai can do it or maybe in the near future or medium future ai could rewrite parts of its own neural network or something if we make interpretability progress i mean i don't know it's very out there in science fiction right that's what makes it so cool
+
+rob wiblin yeah i don't know i do feel like sometimes we're living through a science fiction novel
+
+jan leike oh this is nothing it's going to get so much weirder
+
+rob wiblin yeah all right well we have that to look forward to in the 2030s or 2040s
+
+jan leike i don't know exactly how it's going to go but i promise you it'll be weird by today's standards
+
+rob wiblin yeah well best of luck with the project i really look forward to seeing how it comes along my guest today has been jan leike thanks so much for coming on the 80000 hours podcast jan
+
+jan leike thank you so much for having me
